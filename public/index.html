@@ -62,7 +62,7 @@
     <div class="ps-row"><span class="ps-lbl">Tax Withheld (20%)</span><span class="ps-val red" id="ps-tax">-$0.00</span></div>
     <div class="ps-row"><span class="ps-lbl">Super (11.5%)</span><span class="ps-val blue" id="ps-super">$0.00</span></div>
     <div class="ps-net"><div class="lbl">&#128181; NET PAY</div><div class="amt" id="ps-net">$0.00</div></div>
-    <button class="btn-download" onclick="exportCSV()">&#8681; Download Payslip (CSV)</button>
+    <button class="btn-download" onclick="exportCSV()">&#8681; Download Payslip (PDF)</button>
   </div>
   <div class="notes-section">
     <h3>Lunch &amp; Notes</h3>
@@ -113,6 +113,7 @@
   <button class="btn-secondary" onclick="exportCSV()">Export CSV</button>
   <button class="btn-secondary" onclick="logout()">&#8592; Logout</button>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="drum.js"></script>
 <script src="app.js"></script>
 </body>

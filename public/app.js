@@ -1,4 +1,4 @@
-// ─── Workers ─────────────────────────────────────────────────────────────────
+// ─── Config ───────────────────────────────────────────────────────────────────
 var WORKERS = {
   Adam:  {id:'ba97c403-596f-483b-8dd5-3c11131db62a', pin:'7264', rate:81.49},
   James: {id:'7b309a07-cfea-4e78-8109-e7b7d40f4cf4', pin:'5891', rate:48.65},
@@ -17,7 +17,7 @@ var MINS  = Array.from({length:60}, function(_,i){ return pad(i); });
 var AMPM  = ['AM','PM'];
 
 function initDrums() {
-  drumH = new DrumRoller(document.getElementById('drum-h'), HOURS, 6);  // 7 AM
+  drumH = new DrumRoller(document.getElementById('drum-h'), HOURS, 6);
   drumM = new DrumRoller(document.getElementById('drum-m'), MINS,  0);
   drumP = new DrumRoller(document.getElementById('drum-p'), AMPM,  0);
 }
@@ -35,7 +35,7 @@ function showToast(msg) {
   el.innerHTML = msg;
   el.classList.remove('hidden');
   clearTimeout(toastT);
-  toastT = setTimeout(function(){ el.classList.add('hidden'); }, 2200);
+  toastT = setTimeout(function(){ el.classList.add('hidden'); }, 2500);
 }
 
 // ─── Time Modal ───────────────────────────────────────────────────────────────
@@ -73,7 +73,6 @@ function closeModal() {
 function confirmTime() {
   if (!pickTarget) return;
   vibrate(20);
-
   var h12  = parseInt(drumH.getValue()) % 12;
   var min  = parseInt(drumM.getValue()) || 0;
   var ampm = drumP.getValue();
@@ -239,7 +238,7 @@ function renderTable() {
   document.getElementById('ps-net').textContent   = '$' + net.toFixed(2);
 }
 
-// ─── Export ───────────────────────────────────────────────────────────────────
+// ─── PDF Export ───────────────────────────────────────────────────────────────
 function exportCSV() {
   var totHrs = 0, totGross = 0;
   var fmt = function(ts){ return new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true}); };
@@ -261,69 +260,119 @@ function exportCSV() {
 
   var tax = totGross * TAX, superC = totGross * SUPER, net = totGross - tax;
   var weekLabel = weekDays[0].date.getDate() + ' ' + MONTHS[weekDays[0].date.getMonth()] +
-                  ' – ' + weekDays[4].date.getDate() + ' ' + MONTHS[weekDays[4].date.getMonth()] +
+                  ' - ' + weekDays[4].date.getDate() + ' ' + MONTHS[weekDays[4].date.getMonth()] +
                   ' ' + weekDays[4].date.getFullYear();
   var generated = new Date().toLocaleDateString('en-AU', {day:'2-digit', month:'long', year:'numeric'});
 
-  var rowsHtml = rows.map(function(r) {
-    return '<tr>' +
-      '<td>' + r.day + '</td><td>' + r.date + '</td>' +
-      '<td style="text-align:center">' + r.start + '</td>' +
-      '<td style="text-align:center">' + r.end + '</td>' +
-      '<td style="text-align:center">' + (r.lunch ? r.lunch + ' min' : '--') + '</td>' +
-      '<td style="text-align:right">' + (r.hrs > 0 ? r.hrs.toFixed(2) : '--') + '</td>' +
-      '<td style="text-align:right">' + (r.gross > 0 ? '$' + r.gross.toFixed(2) : '--') + '</td>' +
-      '<td style="color:#666">' + (r.job || '--') + '</td></tr>';
-  }).join('');
+  var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+  var W = 210, margin = 14;
 
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Payslip - ' + user.name + '</title>'
-    + '<style>'
-    + 'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:0;padding:30px;background:#f5f5f5;}'
-    + '.wrap{max-width:700px;margin:0 auto;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);}'
-    + '.top{background:#1a1a1a;color:white;padding:28px 30px;display:flex;justify-content:space-between;align-items:center;}'
-    + '.co{font-size:22px;font-weight:800;letter-spacing:1px;} .sub{font-size:13px;opacity:.6;margin-top:4px;}'
-    + '.badge{background:#0066cc;color:white;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:700;}'
-    + '.meta{padding:24px 30px;display:grid;grid-template-columns:1fr 1fr;gap:16px;border-bottom:2px solid #f0f0f0;}'
-    + '.ml{font-size:11px;font-weight:700;text-transform:uppercase;color:#999;letter-spacing:.5px;}'
-    + '.mv{font-size:15px;font-weight:600;margin-top:4px;}'
-    + 'table{width:100%;border-collapse:collapse;} thead{background:#f8f8f8;}'
-    + 'th{padding:10px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:#666;border-bottom:2px solid #ddd;}'
-    + 'td{padding:11px 12px;border-bottom:1px solid #eee;font-size:13px;}'
-    + '.sum{padding:24px 30px;background:#f8f8f8;border-top:2px solid #ddd;}'
-    + '.sr{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid #eee;}'
-    + '.sl{color:#666;} .sv{font-weight:700;}'
-    + '.gn{color:#28a745;} .rd{color:#dc3545;} .bl{color:#0066cc;}'
-    + '.net{background:#1a1a1a;color:white;padding:20px 30px;display:flex;justify-content:space-between;align-items:center;}'
-    + '.net .l{font-size:14px;font-weight:600;opacity:.8;} .net .a{font-size:28px;font-weight:800;color:#4dd480;}'
-    + '.ft{padding:16px 30px;text-align:center;font-size:11px;color:#bbb;border-top:1px solid #eee;}'
-    + '</style></head><body>'
-    + '<div class="wrap">'
-    + '<div class="top"><div><div class="co">ANL CONSTRUCTIONS</div><div class="sub">Weekly Payslip</div></div><div class="badge">PAYSLIP</div></div>'
-    + '<div class="meta">'
-    + '<div><div class="ml">Employee</div><div class="mv">' + user.name + '</div></div>'
-    + '<div><div class="ml">Week</div><div class="mv">' + weekLabel + '</div></div>'
-    + '<div><div class="ml">Hourly Rate</div><div class="mv">$' + user.rate.toFixed(2) + '/hr</div></div>'
-    + '<div><div class="ml">Generated</div><div class="mv">' + generated + '</div></div>'
-    + '</div>'
-    + '<table><thead><tr><th>Day</th><th>Date</th><th style="text-align:center">Start</th><th style="text-align:center">End</th><th style="text-align:center">Lunch</th><th style="text-align:right">Hours</th><th style="text-align:right">Gross</th><th>Job</th></tr></thead>'
-    + '<tbody>' + rowsHtml + '</tbody></table>'
-    + '<div class="sum">'
-    + '<div class="sr"><span class="sl">Total Hours</span><span class="sv">' + totHrs.toFixed(2) + ' hrs</span></div>'
-    + '<div class="sr"><span class="sl">Gross Pay</span><span class="sv gn">$' + totGross.toFixed(2) + '</span></div>'
-    + '<div class="sr"><span class="sl">Tax Withheld (20%)</span><span class="sv rd">-$' + tax.toFixed(2) + '</span></div>'
-    + '<div class="sr"><span class="sl">Superannuation (11.5%)</span><span class="sv bl">$' + superC.toFixed(2) + '</span></div>'
-    + '</div>'
-    + '<div class="net"><span class="l">💵 NET PAY (Take-home)</span><span class="a">$' + net.toFixed(2) + '</span></div>'
-    + '<div class="ft">ANL Constructions · Generated ' + generated + ' · Confidential</div>'
-    + '</div></body></html>';
+  // Header bar
+  doc.setFillColor(26, 26, 26);
+  doc.rect(0, 0, W, 28, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18); doc.setFont('helvetica', 'bold');
+  doc.text('ANL CONSTRUCTIONS', margin, 12);
+  doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+  doc.text('Weekly Payslip', margin, 20);
+  doc.setFillColor(0, 102, 204);
+  doc.roundedRect(W - margin - 24, 8, 24, 10, 3, 3, 'F');
+  doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+  doc.text('PAYSLIP', W - margin - 12, 14.5, {align:'center'});
 
-  var blob = new Blob([html], {type:'text/html'});
-  var url  = URL.createObjectURL(blob);
-  var a    = document.createElement('a');
-  a.href = url;
-  a.download = 'Payslip-' + user.name + '-' + weekDays[0].isoDate + '.html';
-  a.click();
-  showToast('⬇ Payslip downloaded');
+  // Meta
+  doc.setTextColor(26, 26, 26);
+  var metaY = 36;
+  var metaItems = [
+    ['EMPLOYEE', user.name],
+    ['WEEK', weekLabel],
+    ['HOURLY RATE', '$' + user.rate.toFixed(2) + '/hr'],
+    ['GENERATED', generated]
+  ];
+  metaItems.forEach(function(m, i) {
+    var x = margin + (i % 2) * 90;
+    var y = metaY + Math.floor(i / 2) * 14;
+    doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(150,150,150);
+    doc.text(m[0], x, y);
+    doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(26,26,26);
+    doc.text(m[1], x, y + 6);
+  });
+  doc.setDrawColor(220,220,220); doc.setLineWidth(0.4);
+  doc.line(margin, metaY + 28, W - margin, metaY + 28);
+
+  // Table
+  var tY = metaY + 34;
+  var cols = [
+    {label:'DAY',   w:18, align:'left'},
+    {label:'DATE',  w:28, align:'left'},
+    {label:'START', w:22, align:'center'},
+    {label:'END',   w:22, align:'center'},
+    {label:'LUNCH', w:20, align:'center'},
+    {label:'HRS',   w:18, align:'right'},
+    {label:'GROSS', w:26, align:'right'},
+    {label:'JOB',   w:38, align:'left'}
+  ];
+  doc.setFillColor(248,248,248); doc.rect(margin, tY, W - margin*2, 8, 'F');
+  doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(100,100,100);
+  var cx = margin + 2;
+  cols.forEach(function(c) {
+    var tx = c.align === 'right' ? cx+c.w-2 : c.align === 'center' ? cx+c.w/2 : cx;
+    doc.text(c.label, tx, tY+5.5, {align: c.align==='center'?'center':c.align==='right'?'right':'left'});
+    cx += c.w;
+  });
+
+  var rowY = tY + 8;
+  rows.forEach(function(r, ri) {
+    if (ri % 2 === 1) { doc.setFillColor(252,252,252); doc.rect(margin, rowY, W-margin*2, 9, 'F'); }
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(26,26,26);
+    var vals = [r.day, r.date, r.start, r.end,
+      r.lunch ? r.lunch+'m' : '--',
+      r.hrs > 0 ? r.hrs.toFixed(2)+'h' : '--',
+      r.gross > 0 ? '$'+r.gross.toFixed(2) : '--',
+      r.job || '--'];
+    cx = margin + 2;
+    cols.forEach(function(c, ci) {
+      var tx = c.align==='right' ? cx+c.w-2 : c.align==='center' ? cx+c.w/2 : cx;
+      doc.text(String(vals[ci]), tx, rowY+6, {align: c.align==='center'?'center':c.align==='right'?'right':'left'});
+      cx += c.w;
+    });
+    doc.setDrawColor(235,235,235); doc.line(margin, rowY+9, W-margin, rowY+9);
+    rowY += 9;
+  });
+
+  // Summary box
+  var sumY = rowY + 8;
+  doc.setFillColor(248,248,248); doc.rect(margin, sumY, W-margin*2, 50, 'F');
+  doc.setDrawColor(220,220,220); doc.rect(margin, sumY, W-margin*2, 50, 'S');
+  var sumRows = [
+    {label:'Total Hours',            val:totHrs.toFixed(2)+' hrs', color:[26,26,26]},
+    {label:'Gross Pay',              val:'$'+totGross.toFixed(2),   color:[40,167,69]},
+    {label:'Tax Withheld (20%)',     val:'-$'+tax.toFixed(2),       color:[220,53,69]},
+    {label:'Superannuation (11.5%)', val:'$'+superC.toFixed(2),     color:[0,102,204]}
+  ];
+  sumRows.forEach(function(s, i) {
+    var y = sumY + 8 + i * 10;
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(100,100,100);
+    doc.text(s.label, margin+4, y);
+    doc.setFont('helvetica', 'bold'); doc.setTextColor(s.color[0], s.color[1], s.color[2]);
+    doc.text(s.val, W-margin-4, y, {align:'right'});
+    if (i < 3) { doc.setDrawColor(235,235,235); doc.line(margin+4, y+3, W-margin-4, y+3); }
+  });
+
+  // Net Pay bar
+  var netY = sumY + 54;
+  doc.setFillColor(26,26,26); doc.rect(margin, netY, W-margin*2, 18, 'F');
+  doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(255,255,255);
+  doc.text('NET PAY (Take-home)', margin+4, netY+11);
+  doc.setFontSize(16); doc.setTextColor(77,212,128);
+  doc.text('$'+net.toFixed(2), W-margin-4, netY+12, {align:'right'});
+
+  // Footer
+  doc.setFontSize(8); doc.setFont('helvetica', 'normal'); doc.setTextColor(180,180,180);
+  doc.text('ANL Constructions  ·  Generated ' + generated + '  ·  Confidential', W/2, netY+28, {align:'center'});
+
+  doc.save('Payslip-' + user.name + '-' + weekDays[0].isoDate + '.pdf');
+  showToast('⬇ PDF downloaded');
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
