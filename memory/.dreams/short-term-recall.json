@@ -1,0 +1,339 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-03T08:26:21.485Z",
+  "entries": {
+    "memory:memory/2026-06-01.md:1:48": {
+      "key": "memory:memory/2026-06-01.md:1:48",
+      "path": "memory/2026-06-01.md",
+      "startLine": 1,
+      "endLine": 48,
+      "source": "memory",
+      "snippet": "# 2026-06-01 — Telegram Setup + App Build Kickoff ## Telegram Connected ✅ - Bot: @Anlconstructions_bot - Adam's Telegram ID: 8855418763 - Status: Full pairing complete ## Time Tracking App Spec ### Users - Adam (owner/admin dashboard) - 2 workers (check-in/out interface) - **Total: 3 users** ### Core Features 1. **Check-in/Check-out** - Workers tap button to check in (timestamp) - Workers tap button to check out (GPS location auto-captured) - Simple, fast interface for on-site use 2. **Lunch Breaks** - Auto-deduction (confirm duration with Adam) - Automatic when clocked out - Subtracted from hours worked 3. **Materials/Supply Requests** - Workers type notes during",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.6319062196237348,
+      "maxScore": 0.6319062196237348,
+      "firstRecalledAt": "2026-06-01T04:36:19.917Z",
+      "lastRecalledAt": "2026-06-01T04:36:19.917Z",
+      "queryHashes": [
+        "60941c915b46"
+      ],
+      "recallDays": [
+        "2026-06-01"
+      ],
+      "conceptTags": [
+        "anlconstructions-bot",
+        "owner/admin",
+        "check-in/out",
+        "check-in/check-out",
+        "auto-captured",
+        "on-site",
+        "auto-deduction",
+        "materials/supply"
+      ]
+    },
+    "memory:memory/2026-06-01.md:48:70": {
+      "key": "memory:memory/2026-06-01.md:48:70",
+      "path": "memory/2026-06-01.md",
+      "startLine": 48,
+      "endLine": 70,
+      "source": "memory",
+      "snippet": "**Status:** Deployed & GitHub Pages Enabled **Date Deployed:** 2026-06-01 08:15 UTC **Code Version:** 660 lines - Complete & Tested ### How to Use 1. Workers open the URL on their phone 2. Select their name from dropdown 3. Tap \"Check In\" when arriving 4. Type materials needed (optional) 5. Tap \"Check Out\" when leaving 6. Admin dashboard shows hours worked (30 min lunch auto-deducted) + all materials ### Data Storage - Stored locally on each device's browser (localStorage) - No server/database needed - Data resets daily ### Next Steps - Test with workers - Gather feedback - Consider: cloud backup of daily data? - Consider: export to CSV/email daily summary?",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1.8968214751445314,
+      "maxScore": 0.6322738250481771,
+      "firstRecalledAt": "2026-06-01T09:52:16.728Z",
+      "lastRecalledAt": "2026-06-01T09:55:16.246Z",
+      "queryHashes": [
+        "dff5482b5263",
+        "f2ad1411e04c",
+        "2aea1a45b1ac"
+      ],
+      "recallDays": [
+        "2026-06-01"
+      ],
+      "conceptTags": [
+        "backup",
+        "auto-deducted",
+        "server/database",
+        "csv/email",
+        "status",
+        "deployed",
+        "github",
+        "pages"
+      ]
+    },
+    "memory:memory/2026-06-01.md:1:57": {
+      "key": "memory:memory/2026-06-01.md:1:57",
+      "path": "memory/2026-06-01.md",
+      "startLine": 1,
+      "endLine": 57,
+      "source": "memory",
+      "snippet": "# 2026-06-01 — Telegram Setup + App Build Kickoff ## Telegram Connected ✅ - Bot: @Anlconstructions_bot - Adam's Telegram ID: 8855418763 - Status: Full pairing complete ## Time Tracking App Spec ### Users - Adam (owner/admin dashboard) - 2 workers (check-in/out interface) - **Total: 3 users** ### Core Features 1. **Check-in/Check-out** - Workers tap button to check in (timestamp) - Workers tap button to check out (GPS location auto-captured) - Simple, fast interface for on-site use 2. **Lunch Breaks** - Auto-deduction (confirm duration with Adam) - Automatic when clocked out - Subtracted from hours worked 3. **Materials/Supply Requests** - Workers type notes during",
+      "recallCount": 6,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 5.087069157256272,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-01T09:52:16.728Z",
+      "lastRecalledAt": "2026-06-03T08:25:35.147Z",
+      "queryHashes": [
+        "dff5482b5263",
+        "f2ad1411e04c",
+        "2aea1a45b1ac",
+        "c0585de75389",
+        "2ead30cf759d",
+        "b90797301aa1"
+      ],
+      "recallDays": [
+        "2026-06-01",
+        "2026-06-02",
+        "2026-06-03"
+      ],
+      "conceptTags": [
+        "anlconstructions-bot",
+        "owner/admin",
+        "check-in/out",
+        "check-in/check-out",
+        "auto-captured",
+        "on-site",
+        "auto-deduction",
+        "materials/supply"
+      ]
+    },
+    "memory:memory/2026-06-01.md:48:89": {
+      "key": "memory:memory/2026-06-01.md:48:89",
+      "path": "memory/2026-06-01.md",
+      "startLine": 48,
+      "endLine": 89,
+      "source": "memory",
+      "snippet": "**Status:** Deployed & GitHub Pages Enabled **Date Deployed:** 2026-06-01 08:15 UTC **Code Version:** 660 lines - Complete & Tested ### How to Use 1. Workers open the URL on their phone 2. Select their name from dropdown 3. Tap \"Check In\" when arriving 4. Type materials needed (optional) 5. Tap \"Check Out\" when leaving 6. Admin dashboard shows hours worked (30 min lunch auto-deducted) + all materials ### Data Storage - Stored locally on each device's browser (localStorage) - No server/database needed - Data resets daily ### Next Steps - Test with workers - Gather feedback - Consider: cloud backup of daily data? - Consider: export to CSV/email daily summary? # Session Memory - June 1, 2026",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1.6113717922275927,
+      "maxScore": 0.9801126416538305,
+      "firstRecalledAt": "2026-06-01T23:21:38.401Z",
+      "lastRecalledAt": "2026-06-02T06:20:25.321Z",
+      "queryHashes": [
+        "c0585de75389",
+        "2ead30cf759d"
+      ],
+      "recallDays": [
+        "2026-06-01",
+        "2026-06-02"
+      ],
+      "conceptTags": [
+        "backup",
+        "auto-deducted",
+        "server/database",
+        "csv/email",
+        "status",
+        "deployed",
+        "github",
+        "pages"
+      ]
+    },
+    "memory:memory/2026-06-01.md:143:170": {
+      "key": "memory:memory/2026-06-01.md:143:170",
+      "path": "memory/2026-06-01.md",
+      "startLine": 143,
+      "endLine": 170,
+      "source": "memory",
+      "snippet": "- **Drew:** $112.10/hour | PIN: 8159 **Master Override:** 1322 (works for any worker name, Adam can log in as anyone) ### Pending Features (Not Yet Built) - ⏳ **Google Calendar Integration** — Pull events from adam_thornton@y7mail.com - ⏳ **Weekly SMS Summaries** — Auto-text to Adam (0421 447 653) & Drew (0417 914 721) every Friday 5:30pm - Include: Daily breakdown, each worker's total hours, pay calculations - ⏳ **Running Calendar Display** — Show current date/week in app ### GitHub Credentials - Username: adamthornton-anl - Repo: anlconstructions-timetracker - Branch: main ### Tech Stack - Pure HTML/CSS/JavaScript - GitHub Pages (free hosting) - Browser localStorage (data storage) -",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1.6316963757163716,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-01T23:21:38.401Z",
+      "lastRecalledAt": "2026-06-03T08:26:21.485Z",
+      "queryHashes": [
+        "c0585de75389",
+        "8da7ff4d3c4b"
+      ],
+      "recallDays": [
+        "2026-06-01",
+        "2026-06-03"
+      ],
+      "conceptTags": [
+        "112.10/hour",
+        "adam-thornton",
+        "y7mail.com",
+        "auto-text",
+        "date/week",
+        "adamthornton-anl",
+        "anlconstructions-timetracker",
+        "html/css/javascript"
+      ]
+    },
+    "memory:memory/2026-06-01.md:84:127": {
+      "key": "memory:memory/2026-06-01.md:84:127",
+      "path": "memory/2026-06-01.md",
+      "startLine": 84,
+      "endLine": 127,
+      "source": "memory",
+      "snippet": "- ✅ **Pay Calculations** — Real-time pay calculation based on hourly rates - ✅ **Weekly Navigation** — Move between weeks with ‹ › arrows - ✅ **Export to CSV** — Download timesheet as CSV file - ✅ **Data Persistence** — All data saved in browser localStorage - ✅ **Session Memory** — Workers stay logged in after refresh ### Worker Details - **Adam:** $112.10/hour - **James:** $88.50/hour - **Brady:** $59.00/hour - **Drew:** $112.10/hour ### Pending Features (Not Yet Built) - ⏳ **Google Calendar Integration** — Pull events from adam_thornton@y7mail.com - ⏳ **Weekly SMS Summaries** — Auto-text to Adam (0421 447 653) & Drew (0417 914 721) every Friday 5:30pm - Include: Daily breakdown, each",
+      "recallCount": 4,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3.2626689445594503,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-01T23:21:38.401Z",
+      "lastRecalledAt": "2026-06-03T08:26:21.485Z",
+      "queryHashes": [
+        "c0585de75389",
+        "2ead30cf759d",
+        "b90797301aa1",
+        "8da7ff4d3c4b"
+      ],
+      "recallDays": [
+        "2026-06-01",
+        "2026-06-02",
+        "2026-06-03"
+      ],
+      "conceptTags": [
+        "real-time",
+        "112.10/hour",
+        "88.50/hour",
+        "59.00/hour",
+        "adam-thornton",
+        "y7mail.com",
+        "auto-text",
+        "pay"
+      ]
+    },
+    "memory:memory/2026-06-01.md:116:149": {
+      "key": "memory:memory/2026-06-01.md:116:149",
+      "path": "memory/2026-06-01.md",
+      "startLine": 116,
+      "endLine": 149,
+      "source": "memory",
+      "snippet": "3. Configure weekly SMS automation 4. Add calendar display to app header # Session Memory - June 1, 2026 ## App Development Complete ✅ **Anlconstructions Time Tracker App** is now fully built and deployed to GitHub Pages. ### Live URL - **https://adamthornton-anl.github.io/anlconstructions-timetracker/** ### Features Implemented - ✅ **Login System with PIN Codes** — Each worker has 4-digit PIN + master override (1322 for Adam) - ✅ **Weekly Time Tracking** — Mon-Fri with Start, Lunch, End columns - ✅ **Auto Time Capture** — Click Start/End buttons, automatically fills with current time - ✅ **Lunch Deduction** — Selectable (30m, 40m, 45m, 1h, None) auto-deducts from daily hours - ✅ **Pay C",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2.260030983613464,
+      "maxScore": 0.9975130599254205,
+      "firstRecalledAt": "2026-06-01T23:21:38.401Z",
+      "lastRecalledAt": "2026-06-03T08:26:21.485Z",
+      "queryHashes": [
+        "c0585de75389",
+        "2ead30cf759d",
+        "8da7ff4d3c4b"
+      ],
+      "recallDays": [
+        "2026-06-01",
+        "2026-06-02",
+        "2026-06-03"
+      ],
+      "conceptTags": [
+        "4-digit",
+        "mon-fri",
+        "start/end",
+        "auto-deducts",
+        "configure",
+        "weekly",
+        "sms",
+        "automation"
+      ]
+    },
+    "memory:memory/2026-06-02.md:86:147": {
+      "key": "memory:memory/2026-06-02.md:86:147",
+      "path": "memory/2026-06-02.md",
+      "startLine": 86,
+      "endLine": 147,
+      "source": "memory",
+      "snippet": "✅ Check-in — Records start_time ✅ Check-out — Records end_time ✅ Lunch selector — Deducts from hours ✅ Job field — Saves location ✅ Materials field — Saves supplies needed HOURS CALCULATION: ✅ 8:00 AM to 5:00 PM = 9 hours ✅ Minus 1 hour lunch = 8.0 hours ✅ Pay calculation: 8.0 × $29.95 (Brady) = $239.60 CHART & DISPLAY: ✅ Week grid shows Mon-Fri ✅ Hours per day calculated ✅ Total hours summed ✅ Total pay calculated ✅ Updates live as entries saved ``` --- ## Files ``` /home/agent/workspace/ ├── public/index.html ← Frontend (all pages + logic) ├── api.js ← Backend API ├── package.json ← Dependencies ├── vercel.json ← Vercel config ├── rend",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-03T08:25:35.147Z",
+      "lastRecalledAt": "2026-06-03T08:26:21.485Z",
+      "queryHashes": [
+        "b90797301aa1",
+        "8da7ff4d3c4b"
+      ],
+      "recallDays": [
+        "2026-06-03"
+      ],
+      "conceptTags": [
+        "check-in",
+        "start-time",
+        "check-out",
+        "end-time",
+        "8.0",
+        "29.95",
+        "239.60",
+        "mon-fri"
+      ]
+    },
+    "memory:memory/2026-06-02.md:1:51": {
+      "key": "memory:memory/2026-06-02.md:1:51",
+      "path": "memory/2026-06-02.md",
+      "startLine": 1,
+      "endLine": 51,
+      "source": "memory",
+      "snippet": "# COMPLETE WORKING APP — June 2, 2026 — FULLY TESTED ✅ ## STATUS: REBUILT & VERIFIED — ALL PAGES WORKING --- ## Pages Built ### 1. Login Page (`id=\"page-login\"`) - Worker selection dropdown (Adam, James, Brady, Drew with rates) - PIN input (4 digits, numeric keypad on mobile) - Error display for invalid login - Login button - **Fully functional and tested** ### 2. Time Tracker Page (`id=\"page-tracker\"`) **Shown after successful login, hidden at first** - Welcome message with worker name - Real-time digital clock (HH:MM:SS format, updates every second) - **Check In button** — Saves current time as start_time - **Check Out button** — Saves current time as end_time - Lunch break selector (",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-03T08:26:21.485Z",
+      "lastRecalledAt": "2026-06-03T08:26:21.485Z",
+      "queryHashes": [
+        "8da7ff4d3c4b"
+      ],
+      "recallDays": [
+        "2026-06-03"
+      ],
+      "conceptTags": [
+        "page-login",
+        "page-tracker",
+        "real-time",
+        "start-time",
+        "end-time",
+        "complete",
+        "working",
+        "app"
+      ]
+    },
+    "memory:memory/2026-06-02.md:38:98": {
+      "key": "memory:memory/2026-06-02.md:38:98",
+      "path": "memory/2026-06-02.md",
+      "startLine": 38,
+      "endLine": 98,
+      "source": "memory",
+      "snippet": "- Updates live as entries are saved --- ## Technical Details ### Frontend (`public/index.html`) - Single-page app (SPA) - Two main sections: login & tracker - Uses `App` object with methods: - `init()` — Initialize app - `selectWorker(name)` — Select worker - `login()` — Validate PIN & authenticate - `checkIn()` — POST start_time to API - `checkOut()` — POST end_time to API - `save()` — POST full entry (lunch, job, materials) - `loadEntries()` — GET entries from API - `renderWeek()` — Display hours chart - `logout()` — Clear session & reset form ### Backend (`api.js`) - Express.js server - Routes: - `POST /api/login` — Verify worker + PIN - `POST /api/entry` — Creat",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-03T08:26:21.485Z",
+      "lastRecalledAt": "2026-06-03T08:26:21.485Z",
+      "queryHashes": [
+        "8da7ff4d3c4b"
+      ],
+      "recallDays": [
+        "2026-06-03"
+      ],
+      "conceptTags": [
+        "public/index.html",
+        "single-page",
+        "start-time",
+        "end-time",
+        "api.js",
+        "express.js",
+        "api/login",
+        "api/entry"
+      ]
+    }
+  }
+}
