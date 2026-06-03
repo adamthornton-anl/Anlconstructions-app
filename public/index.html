@@ -2,43 +2,95 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AnlConstructions Time Tracker</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; }
-    .header { background: #1a1a1a; color: white; padding: 20px; text-align: center; }
-    .header h1 { font-size: 24px; margin: 0; }
-    .header p { font-size: 14px; opacity: 0.8; margin: 5px 0 0 0; }
-    .container { max-width: 500px; margin: 20px auto; padding: 0 15px; }
-    .page { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .hidden { display: none; }
-    label { display: block; font-weight: 600; margin-top: 15px; margin-bottom: 6px; font-size: 14px; color: #333; }
-    input, select, textarea { width: 100%; padding: 12px; margin: 0 0 12px 0; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; font-family: inherit; }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: #0066cc; box-shadow: 0 0 0 3px rgba(0,102,204,0.1); }
-    button { width: 100%; padding: 14px; margin: 10px 0; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; -webkit-tap-highlight-color: transparent; }
+    .header { background: #1a1a1a; color: white; padding: 18px 20px; text-align: center; }
+    .header h1 { font-size: 22px; margin: 0; letter-spacing: 1px; }
+    .header p { font-size: 13px; opacity: 0.7; margin: 4px 0 0 0; }
+    .container { max-width: 500px; margin: 16px auto; padding: 0 12px 60px 12px; }
+    .page { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .hidden { display: none !important; }
+    label { display: block; font-weight: 600; margin-top: 14px; margin-bottom: 6px; font-size: 14px; color: #333; }
+    input, select, textarea { width: 100%; padding: 13px 12px; margin: 0 0 10px 0; border: 1.5px solid #ddd; border-radius: 8px; font-size: 16px; font-family: inherit; background: #fafafa; transition: border-color 0.2s; -webkit-appearance: none; appearance: none; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #0066cc; background: white; box-shadow: 0 0 0 3px rgba(0,102,204,0.1); }
+    button { width: 100%; padding: 15px; margin: 8px 0; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: rgba(0,0,0,0.1); }
+    button:active { transform: scale(0.97); }
     .btn-primary { background: #0066cc; color: white; }
     .btn-primary:hover { background: #0052a3; }
-    .btn-success { background: #28a745; color: white; }
-    .btn-success:hover { background: #218838; }
-    .btn-danger { background: #dc3545; color: white; }
-    .btn-danger:hover { background: #c82333; }
+    .btn-success { background: #1a9e3f; color: white; }
+    .btn-success:hover { background: #157d32; }
+    .btn-danger { background: #d62b2b; color: white; }
+    .btn-danger:hover { background: #b02222; }
     .btn-secondary { background: #6c757d; color: white; }
     .btn-secondary:hover { background: #5a6268; }
-    .error { color: #c82333; padding: 12px; background: #ffe0e0; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #dc3545; }
-    .success { color: #218838; padding: 12px; background: #e0ffe0; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #28a745; }
-    .clock { font-size: 48px; text-align: center; color: #0066cc; margin: 20px 0; font-family: 'Courier New', monospace; font-weight: bold; letter-spacing: 2px; }
-    .week-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
-    .day-cell { background: #f8f8f8; padding: 12px; text-align: center; border-radius: 6px; border: 1px solid #eee; }
-    .day-name { font-weight: 600; font-size: 12px; color: #666; text-transform: uppercase; }
-    .day-hours { font-size: 20px; font-weight: bold; color: #0066cc; margin-top: 8px; }
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-    .stat-box { background: #f8f8f8; padding: 15px; text-align: center; border-radius: 6px; border: 1px solid #eee; }
-    .stat-label { font-size: 12px; color: #666; font-weight: 600; text-transform: uppercase; }
-    .stat-value { font-size: 24px; font-weight: bold; color: #0066cc; margin-top: 8px; }
-    h2 { font-size: 20px; margin-bottom: 15px; color: #1a1a1a; }
-    h3 { font-size: 14px; margin-top: 20px; margin-bottom: 12px; color: #333; font-weight: 600; }
-    textarea { resize: vertical; }
+    .btn-outline { background: white; color: #0066cc; border: 2px solid #0066cc; }
+    .error { color: #c82333; padding: 12px; background: #fff0f0; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #dc3545; font-size: 14px; }
+    .success { color: #1a7f36; padding: 12px; background: #f0fff4; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #28a745; font-size: 14px; }
+    h2 { font-size: 20px; margin-bottom: 16px; color: #1a1a1a; }
+    h3 { font-size: 15px; margin-top: 22px; margin-bottom: 12px; color: #333; font-weight: 700; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* Time Picker */
+    .time-picker-row { display: flex; gap: 10px; align-items: flex-end; }
+    .time-picker-row .time-field { flex: 1; }
+    .time-picker-row .time-field label { margin-top: 0; }
+    .time-display { display: flex; gap: 8px; margin-bottom: 10px; }
+    .time-badge { background: #e8f0fe; color: #0066cc; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; flex: 1; text-align: center; }
+    .time-badge span { display: block; font-size: 11px; color: #666; font-weight: 500; margin-bottom: 2px; }
+
+    /* Time Picker Modal */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: flex-end; justify-content: center; }
+    .modal-box { background: white; border-radius: 20px 20px 0 0; padding: 20px; width: 100%; max-width: 500px; animation: slideUp 0.25s ease; }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #1a1a1a; }
+    .time-picker-wheels { display: flex; gap: 0; align-items: center; justify-content: center; height: 200px; position: relative; overflow: hidden; }
+    .wheel-col { flex: 1; max-width: 120px; height: 200px; overflow-y: scroll; scroll-snap-type: y mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .wheel-col::-webkit-scrollbar { display: none; }
+    .wheel-item { height: 50px; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 600; scroll-snap-align: center; color: #bbb; transition: color 0.1s, font-size 0.1s; cursor: pointer; }
+    .wheel-item.selected { color: #0066cc; font-size: 30px; }
+    .wheel-sep { font-size: 32px; font-weight: 700; color: #333; padding: 0 4px; line-height: 200px; }
+    .wheel-highlight { position: absolute; top: 50%; transform: translateY(-50%); left: 0; right: 0; height: 52px; background: rgba(0,102,204,0.08); border-top: 2px solid rgba(0,102,204,0.3); border-bottom: 2px solid rgba(0,102,204,0.3); pointer-events: none; border-radius: 6px; margin: 0 12px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .modal-actions button { flex: 1; }
+
+    /* Weekly roster */
+    .week-roster { margin: 14px 0; }
+    .day-row { display: grid; grid-template-columns: 85px 1fr 1fr 1fr; gap: 6px; align-items: center; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; border: 1.5px solid #eee; background: #fafafa; font-size: 14px; }
+    .day-row.today { border-color: #0066cc; background: #f0f6ff; }
+    .day-row.has-entry { border-color: #28a745; background: #f0fff4; }
+    .day-label { font-weight: 700; color: #333; }
+    .day-label .date { font-size: 11px; color: #888; font-weight: 500; }
+    .day-time { color: #555; font-size: 13px; text-align: center; }
+    .day-time.--{ color: #ccc; }
+    .day-hrs { font-weight: 700; color: #0066cc; text-align: right; }
+    .day-hrs.zero { color: #ccc; }
+
+    /* Payslip */
+    .payslip { background: #f8f9ff; border: 1.5px solid #dce4f7; border-radius: 10px; padding: 16px; margin-top: 14px; }
+    .payslip-title { font-size: 15px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .payslip-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid #e8ecf5; font-size: 14px; }
+    .payslip-row:last-child { border-bottom: none; }
+    .payslip-row.total { font-weight: 700; font-size: 16px; color: #1a1a1a; padding-top: 10px; }
+    .payslip-row.deduct .val { color: #d62b2b; }
+    .payslip-row.add .val { color: #1a9e3f; }
+    .payslip-row .lbl { color: #555; }
+    .payslip-row .val { font-weight: 600; }
+    .payslip-row.gross .val { color: #0066cc; font-size: 18px; }
+    .payslip-row.net .val { color: #1a1a1a; font-size: 20px; }
+    .week-label { font-size: 12px; color: #888; text-align: center; margin-bottom: 10px; }
+
+    /* Stats row */
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+    .stat-box { background: #f8f8f8; padding: 14px; text-align: center; border-radius: 8px; border: 1.5px solid #eee; }
+    .stat-label { font-size: 11px; color: #888; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 22px; font-weight: 800; color: #0066cc; margin-top: 6px; }
+    .stat-value.green { color: #1a9e3f; }
+
+    /* Divider */
+    .divider { height: 1px; background: #f0f0f0; margin: 20px -20px; }
   </style>
 </head>
 <body>
@@ -71,194 +123,391 @@
     <!-- TRACKER PAGE -->
     <div id="page-tracker" class="hidden page">
       <div id="success-msg" class="hidden success"></div>
+      <div id="tracker-error-msg" class="hidden error"></div>
       <h2 id="worker-name"></h2>
-      
-      <div class="clock" id="clock">00:00:00</div>
-      
-      <button class="btn-success" onclick="checkIn()">✓ CHECK IN</button>
-      <button class="btn-danger" onclick="checkOut()">✗ CHECK OUT</button>
-      
-      <label>Lunch Break (minutes)</label>
+
+      <div class="week-label" id="week-label"></div>
+
+      <!-- Time Entry Form -->
+      <label>Check-In Time</label>
+      <div class="time-display">
+        <div class="time-badge" id="checkin-display" onclick="openTimePicker('checkin')">
+          <span>Tap to set</span>
+          <span id="checkin-time-text">--:--</span>
+        </div>
+      </div>
+
+      <label>Check-Out Time</label>
+      <div class="time-display">
+        <div class="time-badge" id="checkout-display" onclick="openTimePicker('checkout')">
+          <span>Tap to set</span>
+          <span id="checkout-time-text">--:--</span>
+        </div>
+      </div>
+
+      <label>Day</label>
+      <select id="day-select">
+        <option value="">-- Select Day --</option>
+      </select>
+
+      <label>Lunch Break</label>
       <select id="lunch-select">
-        <option value="0">None</option>
+        <option value="0">No Lunch</option>
         <option value="30">30 min</option>
         <option value="45">45 min</option>
         <option value="60">60 min</option>
       </select>
-      
+
       <label>Job Location</label>
       <input type="text" id="job-input" placeholder="e.g. 123 Main St">
       
       <label>Materials / Notes</label>
       <textarea id="materials-input" placeholder="Concrete, nails, tools..."></textarea>
       
-      <button class="btn-primary" onclick="saveEntry()">SAVE ENTRY</button>
-      
-      <h3>Weekly Hours</h3>
-      <div class="week-grid" id="week-grid"></div>
-      
-      <div class="stats">
+      <button class="btn-primary" onclick="saveEntry()">💾 SAVE ENTRY</button>
+
+      <div class="divider"></div>
+
+      <!-- Weekly Roster -->
+      <h3>📅 Week Roster</h3>
+      <div class="week-roster" id="week-roster"></div>
+
+      <div class="stats-row">
         <div class="stat-box">
           <div class="stat-label">Total Hours</div>
           <div class="stat-value" id="total-hours">0.0</div>
         </div>
         <div class="stat-box">
-          <div class="stat-label">Total Pay</div>
-          <div class="stat-value" id="total-pay">$0.00</div>
+          <div class="stat-label">Gross Pay</div>
+          <div class="stat-value" id="total-gross">$0</div>
         </div>
       </div>
-      
+
+      <div class="divider"></div>
+
+      <!-- Payslip -->
+      <h3>💵 Payslip Summary</h3>
+      <div class="payslip">
+        <div class="payslip-title">📄 Weekly Pay Estimate</div>
+        <div class="payslip-row gross">
+          <span class="lbl">Gross Pay</span>
+          <span class="val" id="ps-gross">$0.00</span>
+        </div>
+        <div class="payslip-row deduct">
+          <span class="lbl">Tax Withholding (20%)</span>
+          <span class="val" id="ps-tax">-$0.00</span>
+        </div>
+        <div class="payslip-row add">
+          <span class="lbl">Super (11.5%)</span>
+          <span class="val" id="ps-super">+$0.00</span>
+        </div>
+        <div class="payslip-row net total">
+          <span class="lbl">Net Pay (take-home)</span>
+          <span class="val" id="ps-net">$0.00</span>
+        </div>
+      </div>
+
       <button class="btn-secondary" onclick="logout()" style="margin-top: 20px;">Logout</button>
     </div>
   </div>
 
+  <!-- Time Picker Modal -->
+  <div id="time-modal" class="modal-overlay hidden" onclick="closeModalIfOverlay(event)">
+    <div class="modal-box">
+      <div class="modal-title" id="modal-title">Set Time</div>
+      <div class="time-picker-wheels">
+        <div class="wheel-highlight"></div>
+        <div class="wheel-col" id="wheel-hours"></div>
+        <div class="wheel-sep">:</div>
+        <div class="wheel-col" id="wheel-minutes"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="cancelTimePicker()">Cancel</button>
+        <button class="btn-primary" onclick="confirmTimePicker()">Set Time</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ─── Config ───────────────────────────────────────────────────────────────
     const WORKERS = {
-      'Adam': { id: 'ba97c403-596f-483b-8dd5-3c11131db62a', pin: '7264', rate: 81.49 },
+      'Adam':  { id: 'ba97c403-596f-483b-8dd5-3c11131db62a', pin: '7264', rate: 81.49 },
       'James': { id: '7b309a07-cfea-4e78-8109-e7b7d40f4cf4', pin: '5891', rate: 48.65 },
       'Brady': { id: 'be3737d8-0235-4fb8-85a6-6150659a278f', pin: '3742', rate: 29.95 },
-      'Drew': { id: '3397c62c-b85e-4cda-ac24-fd138b1eb74a', pin: '8159', rate: 81.49 }
+      'Drew':  { id: '3397c62c-b85e-4cda-ac24-fd138b1eb74a', pin: '8159', rate: 81.49 }
     };
 
-    let currentUser = null;
-    let entries = {};
+    const TAX_RATE   = 0.20;
+    const SUPER_RATE = 0.115;
 
-    // Update clock every second
-    setInterval(() => {
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById('clock').textContent = `${h}:${m}:${s}`;
-    }, 1000);
+    // ─── State ────────────────────────────────────────────────────────────────
+    let currentUser   = null;
+    let entries       = {};
+    let weekDays      = [];   // [{name:'Mon', date:Date, label:'Mon 2 Jun 2026', isoDate:'2026-06-02'}, ...]
+    let checkinHour   = null;
+    let checkinMin    = null;
+    let checkoutHour  = null;
+    let checkoutMin   = null;
+    let pickerTarget  = null; // 'checkin' | 'checkout'
+    let selectedHour  = 7;
+    let selectedMin   = 0;
 
-    function getDayName() {
-      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      return days[new Date().getDay()];
+    // ─── Week Dates ──────────────────────────────────────────────────────────
+    function buildWeekDays() {
+      const now   = new Date();
+      const day   = now.getDay(); // 0=Sun, 1=Mon, ...
+      const diff  = (day === 0) ? -6 : 1 - day; // days since Monday
+      const monday = new Date(now);
+      monday.setDate(now.getDate() + diff);
+      monday.setHours(0,0,0,0);
+
+      const dayNames  = ['Mon','Tue','Wed','Thu','Fri'];
+      const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      weekDays = [];
+
+      for (let i = 0; i < 5; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        const dd   = d.getDate();
+        const mon  = monthNames[d.getMonth()];
+        const yyyy = d.getFullYear();
+        const isoDate = `${yyyy}-${String(d.getMonth()+1).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
+        weekDays.push({
+          name:    dayNames[i],
+          date:    d,
+          label:   `${dayNames[i]} ${dd} ${mon} ${yyyy}`,
+          short:   `${dayNames[i]} ${dd} ${mon}`,
+          isoDate: isoDate,
+        });
+      }
     }
 
-    function showError(msg) {
-      const el = document.getElementById('error-msg');
+    function getTodayDayName() {
+      const d = new Date().getDay(); // 0=Sun
+      return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d];
+    }
+
+    function getWeekLabel() {
+      if (!weekDays.length) return '';
+      const s = weekDays[0];
+      const e = weekDays[4];
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return `Week: ${s.date.getDate()} – ${e.date.getDate()} ${months[e.date.getMonth()]} ${e.date.getFullYear()}`;
+    }
+
+    // ─── Populate day select ──────────────────────────────────────────────────
+    function populateDaySelect() {
+      const sel   = document.getElementById('day-select');
+      const today = getTodayDayName();
+      sel.innerHTML = '<option value="">-- Select Day --</option>';
+      weekDays.forEach(wd => {
+        const opt = document.createElement('option');
+        opt.value = wd.name;
+        opt.textContent = wd.label;
+        if (wd.name === today) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    // ─── Error / Success helpers ──────────────────────────────────────────────
+    function showError(msg, ctx) {
+      const id = ctx === 'tracker' ? 'tracker-error-msg' : 'error-msg';
+      const el = document.getElementById(id);
       el.textContent = msg;
       el.classList.remove('hidden');
+    }
+
+    function clearError(ctx) {
+      const id = ctx === 'tracker' ? 'tracker-error-msg' : 'error-msg';
+      document.getElementById(id).classList.add('hidden');
     }
 
     function showSuccess(msg) {
       const el = document.getElementById('success-msg');
       el.textContent = msg;
       el.classList.remove('hidden');
-      setTimeout(() => el.classList.add('hidden'), 2000);
+      setTimeout(() => el.classList.add('hidden'), 3000);
     }
 
+    // ─── Login / Logout ───────────────────────────────────────────────────────
     function login() {
       const name = document.getElementById('worker-select').value;
-      const pin = document.getElementById('pin-input').value;
-      const err = document.getElementById('error-msg');
-      err.classList.add('hidden');
+      const pin  = document.getElementById('pin-input').value;
+      clearError('login');
 
-      if (!name) {
-        showError('Please select a worker');
-        return;
-      }
-
-      if (pin.length !== 4) {
-        showError('PIN must be 4 digits');
-        return;
-      }
+      if (!name)            { showError('Please select a worker'); return; }
+      if (pin.length !== 4) { showError('PIN must be 4 digits'); return; }
 
       const worker = WORKERS[name];
-      if (!worker || pin !== worker.pin) {
-        showError('Invalid PIN');
-        return;
-      }
+      if (!worker || pin !== worker.pin) { showError('Invalid PIN'); return; }
 
       currentUser = { name, ...worker };
+      buildWeekDays();
+
       document.getElementById('page-login').classList.add('hidden');
       document.getElementById('page-tracker').classList.remove('hidden');
-      document.getElementById('worker-name').textContent = name;
+      document.getElementById('worker-name').textContent = `👷 ${name}`;
+      document.getElementById('week-label').textContent = getWeekLabel();
+      populateDaySelect();
       loadEntries();
     }
 
     function logout() {
-      currentUser = null;
-      entries = {};
+      currentUser  = null;
+      entries      = {};
+      checkinHour  = null; checkinMin  = null;
+      checkoutHour = null; checkoutMin = null;
+      document.getElementById('checkin-time-text').textContent  = '--:--';
+      document.getElementById('checkout-time-text').textContent = '--:--';
       document.getElementById('page-tracker').classList.add('hidden');
       document.getElementById('page-login').classList.remove('hidden');
       document.getElementById('worker-select').value = '';
       document.getElementById('pin-input').value = '';
-      document.getElementById('error-msg').classList.add('hidden');
+      clearError('login');
     }
 
-    function checkIn() {
-      if (!currentUser) return;
-      const day = getDayName();
-      const time = new Date().toISOString();
+    // ─── Time Picker ──────────────────────────────────────────────────────────
+    function buildWheel(colId, values, selected, formatter) {
+      const col = document.getElementById(colId);
+      col.innerHTML = '';
+      // Padding items for centering
+      for (let i = 0; i < 2; i++) col.appendChild(makePad());
+      values.forEach(v => {
+        const div = document.createElement('div');
+        div.className = 'wheel-item' + (v === selected ? ' selected' : '');
+        div.textContent = formatter(v);
+        div.dataset.value = v;
+        col.appendChild(div);
+      });
+      for (let i = 0; i < 2; i++) col.appendChild(makePad());
 
-      fetch('/api/entry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: currentUser.id,
-          day: day,
-          start_time: time
-        })
-      })
-      .then(r => r.json())
-      .then(d => {
-        showSuccess('✓ Checked in');
-        loadEntries();
-      })
-      .catch(e => showError('Error: ' + e.message));
+      // Scroll to selected
+      const idx = values.indexOf(selected);
+      col.scrollTop = idx * 50;
+
+      col.addEventListener('scroll', () => onWheelScroll(col, colId), { passive: true });
     }
 
-    function checkOut() {
-      if (!currentUser) return;
-      const day = getDayName();
-      const time = new Date().toISOString();
-
-      fetch('/api/entry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: currentUser.id,
-          day: day,
-          end_time: time
-        })
-      })
-      .then(r => r.json())
-      .then(d => {
-        showSuccess('✓ Checked out');
-        loadEntries();
-      })
-      .catch(e => showError('Error: ' + e.message));
+    function makePad() {
+      const d = document.createElement('div');
+      d.className = 'wheel-item';
+      d.style.height = '50px';
+      return d;
     }
 
+    function onWheelScroll(col, colId) {
+      const idx = Math.round(col.scrollTop / 50);
+      const items = col.querySelectorAll('.wheel-item[data-value]');
+      let val = null;
+      items.forEach((item, i) => {
+        item.classList.toggle('selected', i === idx);
+        if (i === idx) val = parseInt(item.dataset.value);
+      });
+      if (colId === 'wheel-hours')   selectedHour = val;
+      if (colId === 'wheel-minutes') selectedMin  = val;
+    }
+
+    function openTimePicker(target) {
+      pickerTarget = target;
+      const isIn = target === 'checkin';
+      document.getElementById('modal-title').textContent = isIn ? '🟢 Set Check-In Time' : '🔴 Set Check-Out Time';
+
+      const initH = isIn ? (checkinHour  !== null ? checkinHour  : 7)  : (checkoutHour !== null ? checkoutHour : 15);
+      const initM = isIn ? (checkinMin   !== null ? checkinMin   : 0)  : (checkoutMin  !== null ? checkoutMin  : 30);
+      selectedHour = initH;
+      selectedMin  = initM;
+
+      const hours   = Array.from({length: 24}, (_, i) => i);
+      const minutes = Array.from({length: 12}, (_, i) => i * 5);
+
+      buildWheel('wheel-hours',   hours,   initH, h => String(h).padStart(2,'0'));
+      buildWheel('wheel-minutes', minutes, initM, m => String(m).padStart(2,'0'));
+
+      document.getElementById('time-modal').classList.remove('hidden');
+    }
+
+    function closeModalIfOverlay(e) {
+      if (e.target === document.getElementById('time-modal')) cancelTimePicker();
+    }
+
+    function cancelTimePicker() {
+      document.getElementById('time-modal').classList.add('hidden');
+    }
+
+    function confirmTimePicker() {
+      // Snap selectedMin to nearest 5
+      selectedMin = Math.round(selectedMin / 5) * 5;
+      if (selectedMin >= 60) { selectedMin = 55; }
+
+      const formatted = `${String(selectedHour).padStart(2,'0')}:${String(selectedMin).padStart(2,'0')}`;
+
+      if (pickerTarget === 'checkin') {
+        checkinHour = selectedHour;
+        checkinMin  = selectedMin;
+        document.getElementById('checkin-time-text').textContent = formatted;
+      } else {
+        checkoutHour = selectedHour;
+        checkoutMin  = selectedMin;
+        document.getElementById('checkout-time-text').textContent = formatted;
+      }
+
+      document.getElementById('time-modal').classList.add('hidden');
+    }
+
+    // ─── Build ISO datetime from selected week day + hour:min ─────────────────
+    function buildISOTime(dayName, hour, min) {
+      const wd = weekDays.find(w => w.name === dayName);
+      if (!wd) return null;
+      const d = new Date(wd.date);
+      d.setHours(hour, min, 0, 0);
+      return d.toISOString();
+    }
+
+    // ─── Save Entry ───────────────────────────────────────────────────────────
     function saveEntry() {
       if (!currentUser) return;
-      const day = getDayName();
-      const lunch = parseInt(document.getElementById('lunch-select').value);
-      const job = document.getElementById('job-input').value;
-      const materials = document.getElementById('materials-input').value;
+      clearError('tracker');
+
+      const dayName = document.getElementById('day-select').value;
+      if (!dayName)              { showError('Please select a day', 'tracker'); return; }
+      if (checkinHour === null)  { showError('Please set a check-in time', 'tracker'); return; }
+      if (checkoutHour === null) { showError('Please set a check-out time', 'tracker'); return; }
+
+      const startISO = buildISOTime(dayName, checkinHour,  checkinMin);
+      const endISO   = buildISOTime(dayName, checkoutHour, checkoutMin);
+      const lunch    = parseInt(document.getElementById('lunch-select').value);
+      const job      = document.getElementById('job-input').value.trim();
+      const mats     = document.getElementById('materials-input').value.trim();
+
+      // Validate times
+      if (new Date(endISO) <= new Date(startISO)) {
+        showError('Check-out must be after check-in', 'tracker');
+        return;
+      }
 
       fetch('/api/entry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: currentUser.id,
-          day: day,
+          user_id:    currentUser.id,
+          day:        dayName,
+          start_time: startISO,
+          end_time:   endISO,
           lunch_mins: lunch,
-          job: job,
-          materials: materials
+          job:        job,
+          materials:  mats
         })
       })
       .then(r => r.json())
       .then(d => {
-        showSuccess('✓ Entry saved');
+        if (d.error) { showError(d.error, 'tracker'); return; }
+        showSuccess(`✓ Entry saved for ${dayName}`);
         loadEntries();
       })
-      .catch(e => showError('Error: ' + e.message));
+      .catch(e => showError('Network error: ' + e.message, 'tracker'));
     }
 
+    // ─── Load & Render ────────────────────────────────────────────────────────
     function loadEntries() {
       if (!currentUser) return;
 
@@ -267,42 +516,13 @@
         .then(data => {
           entries = {};
           if (Array.isArray(data)) {
-            data.forEach(e => {
-              entries[e.day] = e;
-            });
+            data.forEach(e => { entries[e.day] = e; });
           }
-          renderWeek();
+          renderRoster();
         })
         .catch(e => console.error('Load error:', e));
     }
 
-    function renderWeek() {
-      const grid = document.getElementById('week-grid');
-      grid.innerHTML = '';
-      const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-      let totalHours = 0;
-
-      days.forEach(day => {
-        const entry = entries[day];
-        let hours = 0;
-
-        if (entry && entry.start_time && entry.end_time) {
-          const start = new Date(entry.start_time);
-          const end = new Date(entry.end_time);
-          const mins = (end - start) / 60000 - (entry.lunch_mins || 0);
-          hours = Math.max(0, mins / 60);
-          totalHours += hours;
-        }
-
-        const cell = document.createElement('div');
-        cell.className = 'day-cell';
-        cell.innerHTML = `<div class="day-name">${day}</div><div class="day-hours">${hours.toFixed(1)}h</div>`;
-        grid.appendChild(cell);
-      });
-
-      document.getElementById('total-hours').textContent = totalHours.toFixed(1);
-      document.getElementById('total-pay').textContent = '$' + (totalHours * currentUser.rate).toFixed(2);
-    }
-  </script>
-</body>
-</html>
+    function calcHours(entry) {
+      if (!entry || !entry.start_time || !entry.end_time) return 0;
+      const start = new Date(entry.start_time
