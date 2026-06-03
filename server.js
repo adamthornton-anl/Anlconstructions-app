@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const SUPABASE_URL = 'https://tzwsdqbrtohcxzvdfwdw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_KEY || 'sb_publishable_frfpPpx6hXMGRdsJrDlW_A_9WTKqN1l';
 const supabase     = createClient(SUPABASE_URL, SUPABASE_KEY);
-const resend       = new Resend(process.env.RESEND_API_KEY || '');
+const resend       = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const ADMIN_EMAIL  = 'adam_thornton@y7mail.com';
 const FROM_EMAIL   = 'payroll@anlconstructions.com.au'; // update once domain verified in Resend
@@ -111,6 +111,7 @@ app.get('/api/entries/:user_id', async (req, res) => {
 // ─── API: Daily email (call from cron at 5pm AEST) ────────────────────────────
 app.post('/api/email/daily', async (req, res) => {
   try {
+    if (!resend) return res.status(503).json({ error: 'RESEND_API_KEY not configured' });
     const today = req.body.date || todayISO();
     const dow   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(today + 'T12:00:00Z').getDay()];
     const label = dow + ' ' + new Date(today + 'T12:00:00Z').toLocaleDateString('en-AU', {day:'numeric', month:'long', year:'numeric'});
@@ -187,6 +188,7 @@ app.post('/api/email/daily', async (req, res) => {
 // ─── API: Friday payroll email ────────────────────────────────────────────────
 app.post('/api/email/payroll', async (req, res) => {
   try {
+    if (!resend) return res.status(503).json({ error: 'RESEND_API_KEY not configured' });
     const range = currentWeekRange();
     const rows  = [];
 
