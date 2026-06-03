@@ -269,7 +269,7 @@ function renderTable() {
   var ratio  = totHrs / 37;
   var tax    = user.weeklyTax   * ratio;
   var superC = user.weeklySuper * ratio;
-  var net    = totGross - tax;
+  var net    = totGross - tax - superC;
   document.getElementById('ps-rate').textContent  = '$' + user.rate.toFixed(2) + '/h';
   document.getElementById('ps-hrs').textContent   = totHrs.toFixed(2) + ' hrs';
   document.getElementById('ps-gross').textContent = '$' + totGross.toFixed(2);
@@ -301,7 +301,7 @@ function exportCSV() {
   var ratio  = totHrs / 37;
   var tax    = user.weeklyTax   * ratio;
   var superC = user.weeklySuper * ratio;
-  var net    = totGross - tax;
+  var net    = totGross - tax - superC;
   var weekLabel = weekDays[0].date.getDate() + ' ' + MONTHS[weekDays[0].date.getMonth()] +
                   ' - ' + weekDays[4].date.getDate() + ' ' + MONTHS[weekDays[4].date.getMonth()] +
                   ' ' + weekDays[4].date.getFullYear();
