@@ -15,5 +15,15 @@
       "src": "/(.*)",
       "dest": "/server.js"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/email/daily",
+      "schedule": "0 7 * * 1-5"
+    },
+    {
+      "path": "/api/email/payroll",
+      "schedule": "0 7 * * 5"
+    }
   ]
 }

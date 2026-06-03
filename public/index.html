@@ -45,6 +45,7 @@
         <th style="text-align:center">Lunch</th>
         <th style="text-align:right">Hrs</th>
         <th style="text-align:right">Pay</th>
+        <!-- job rows are full-width sub-rows, no header needed -->
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -71,8 +72,6 @@
 
   <div class="notes-section">
     <h3>Notes</h3>
-    <label>Job Location</label>
-    <input type="text" id="job-input" placeholder="e.g. 123 Main St">
     <label>Materials / Notes</label>
     <textarea id="materials-input" rows="3" placeholder="Concrete, nails, tools..."></textarea>
     <button class="btn-primary" onclick="saveNotes()">SAVE NOTES</button>

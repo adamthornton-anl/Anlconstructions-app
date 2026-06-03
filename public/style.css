@@ -147,3 +147,21 @@ tr.today-row { background: #fffde7 !important; }
   box-shadow: 0 4px 16px rgba(0,0,0,.2); pointer-events: none;
 }
 .spacer { height: 90px; }
+
+/* ── Job row ── */
+.job-row { background: #fafafa; }
+.job-cell { padding: 4px 8px 10px !important; }
+.job-field {
+  width: 100%;
+  font-size: 13px;
+  padding: 7px 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  color: #333;
+  font-family: inherit;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+.job-field:focus { outline: none; border-color: #0066cc; }
+.today-row + .job-row { background: #fffbe6; }

@@ -230,6 +230,7 @@ function renderTable() {
     var lCls = lunchMins ? 'col-lunch set' : 'col-lunch';
     var isToday = day.isoDate === todayIso;
 
+    var jobVal = (e && e.job) || '';
     var tr = document.createElement('tr');
     if (isToday) tr.className = 'today-row';
     tr.innerHTML =
@@ -240,6 +241,14 @@ function renderTable() {
       '<td class="col-hrs">' + (hrs > 0 ? hrs.toFixed(1)+'h' : '–') + '</td>' +
       '<td class="col-pay">' + (gross > 0 ? '$'+gross.toFixed(2) : '–') + '</td>';
     tbody.appendChild(tr);
+
+    // Job input row
+    var jobTr = document.createElement('tr');
+    jobTr.className = 'job-row';
+    jobTr.innerHTML = '<td colspan="6" class="job-cell">' +
+      '<input class="job-field" type="text" placeholder="Job / client for ' + day.name + '..." value="' + jobVal.replace(/"/g, '&quot;') + '" data-iso="' + day.isoDate + '">' +
+      '</td>';
+    tbody.appendChild(jobTr);
   });
 
   // Time tap listeners
@@ -261,6 +270,19 @@ function renderTable() {
       var dayObj = weekDays.find(function(d){ return d.isoDate === iso; });
       if (dayObj) openLunchModal(dayObj);
     });
+  });
+
+  // Job field save on blur/enter
+  tbody.querySelectorAll('.job-field').forEach(function(input) {
+    function saveJob() {
+      var iso = input.dataset.iso;
+      var val = input.value.trim();
+      postEntry({user_id: user.id, day: iso, job: val})
+        .then(function(){ entries[iso] = entries[iso] || {}; entries[iso].job = val; })
+        .catch(function(e){ console.error('Job save:', e); });
+    }
+    input.addEventListener('blur', saveJob);
+    input.addEventListener('keydown', function(e){ if (e.key === 'Enter') { input.blur(); } });
   });
 
   document.getElementById('tot-hrs').textContent   = totHrs.toFixed(1) + 'h';
