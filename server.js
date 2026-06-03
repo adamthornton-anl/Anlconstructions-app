@@ -121,42 +121,36 @@ app.post('/api/entry', async (req, res) => {
   }
 });
 
-// API: Get entries (current week Mon-Fri)
+// API: Get entries for a date range (from=YYYY-MM-DD&to=YYYY-MM-DD)
 app.get('/api/entries/:user_id', async (req, res) => {
   try {
-    // Calculate current week's Monday and Friday dates
-    const now = new Date();
-    const day = now.getDay(); // 0=Sun
-    const diff = (day === 0) ? -6 : 1 - day;
-    const monday = new Date(now);
-    monday.setDate(now.getDate() + diff);
-    monday.setHours(0, 0, 0, 0);
-    const friday = new Date(monday);
-    friday.setDate(monday.getDate() + 4);
-    friday.setHours(23, 59, 59, 999);
+    let from = req.query.from;
+    let to   = req.query.to;
 
-    // Query entries with start_time in current week
+    // If no range provided, default to current week
+    if (!from || !to) {
+      const now = new Date();
+      const dow = now.getDay();
+      const diff = dow === 0 ? -6 : 1 - dow;
+      const monday = new Date(now);
+      monday.setDate(now.getDate() + diff);
+      monday.setHours(0, 0, 0, 0);
+      const friday = new Date(monday);
+      friday.setDate(monday.getDate() + 4);
+      from = monday.toISOString().split('T')[0];
+      to   = friday.toISOString().split('T')[0];
+    }
+
+    // Query by the `day` field (YYYY-MM-DD string) — works for any week
     const { data: entries, error } = await supabase
       .from('time_entries')
       .select('*')
       .eq('user_id', req.params.user_id)
-      .gte('start_time', monday.toISOString())
-      .lte('start_time', friday.toISOString())
-      .order('start_time');
+      .gte('day', from)
+      .lte('day', to)
+      .order('day');
 
-    // Fallback: also query by day name if no start_time filter works
-    if (error) {
-      // Fallback to old query without date filter
-      const { data: allEntries, error: err2 } = await supabase
-        .from('time_entries')
-        .select('*')
-        .eq('user_id', req.params.user_id)
-        .order('day');
-      if (err2) throw err2;
-      res.json(allEntries || []);
-      return;
-    }
-
+    if (error) throw error;
     res.json(entries || []);
   } catch (err) {
     res.status(500).json({ error: err.message });

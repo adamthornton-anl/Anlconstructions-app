@@ -1,600 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AnlConstructions Time Tracker</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
-      background: #f5f5f5; 
-      -webkit-tap-highlight-color: transparent;
-      padding: 0;
-    }
-    .header { 
-      background: #1a1a1a; 
-      color: white; 
-      padding: 20px; 
-      text-align: center; 
-    }
-    .header h1 { font-size: 24px; margin: 0; }
-    .header p { font-size: 14px; opacity: 0.7; margin: 5px 0 0 0; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px 15px 100px 15px; }
-    .page { background: white; padding: 0; border-radius: 0; box-shadow: none; }
-    .hidden { display: none !important; }
-    
-    /* Login Page */
-    .login-form { padding: 20px; }
-    label { display: block; font-weight: 600; margin-top: 15px; margin-bottom: 6px; font-size: 14px; color: #333; }
-    input, select { 
-      width: 100%; 
-      padding: 12px; 
-      margin: 0 0 15px 0; 
-      border: 1px solid #ddd; 
-      border-radius: 6px; 
-      font-size: 16px; 
-      font-family: inherit;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-    input:focus, select:focus { outline: none; border-color: #0066cc; box-shadow: 0 0 0 3px rgba(0,102,204,0.1); }
-    
-    button { 
-      width: 100%; 
-      padding: 14px; 
-      margin: 10px 0; 
-      border: none; 
-      border-radius: 6px; 
-      font-size: 16px; 
-      font-weight: 600; 
-      cursor: pointer; 
-      transition: all 0.2s;
-    }
-    .btn-primary { background: #0066cc; color: white; }
-    .btn-primary:hover { background: #0052a3; }
-    .btn-success { background: #28a745; color: white; }
-    .btn-success:hover { background: #218838; }
-    .btn-danger { background: #dc3545; color: white; }
-    .btn-danger:hover { background: #c82333; }
-    .btn-secondary { background: #6c757d; color: white; }
-    .btn-secondary:hover { background: #5a6268; }
-    .error { color: #c82333; padding: 12px; background: #ffe0e0; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #dc3545; }
-    .success { color: #218838; padding: 12px; background: #e0ffe0; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #28a745; }
-    
-    /* Tracker Page */
-    .tracker-header { 
-      background: white; 
-      padding: 20px; 
-      text-align: center; 
-      border-bottom: 2px solid #f0f0f0;
-    }
-    .worker-name { font-size: 20px; font-weight: 700; color: #1a1a1a; margin: 0; }
-    .week-label { font-size: 14px; color: #666; margin: 8px 0 0 0; }
-    
-    /* Week Navigation */
-    .week-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      background: white;
-      border-bottom: 1px solid #eee;
-    }
-    .week-nav button {
-      width: auto;
-      padding: 8px 12px;
-      margin: 0;
-      font-size: 20px;
-      background: none;
-      color: #0066cc;
-      border: none;
-      cursor: pointer;
-    }
-    .week-nav span { font-size: 14px; font-weight: 600; color: #333; }
-    
-    /* Table */
-    .timesheet-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-    .timesheet-table thead {
-      background: #f8f8f8;
-      border-bottom: 2px solid #ddd;
-    }
-    .timesheet-table th {
-      padding: 12px;
-      text-align: left;
-      font-weight: 700;
-      font-size: 13px;
-      color: #333;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .timesheet-table td {
-      padding: 12px;
-      border-bottom: 1px solid #eee;
-      font-size: 14px;
-    }
-    .day-cell { font-weight: 600; color: #1a1a1a; width: 80px; }
-    .time-cell { text-align: center; cursor: pointer; color: #0066cc; font-weight: 600; }
-    .time-cell:hover { text-decoration: underline; }
-    .hours-cell { text-align: right; font-weight: 600; color: #333; }
-    .pay-cell { text-align: right; font-weight: 600; color: #28a745; }
-    
-    /* Totals Row */
-    .totals-row {
-      background: #f8f8f8;
-      font-weight: 700;
-      border-top: 2px solid #ddd;
-    }
-    .totals-row td { padding: 14px 12px; }
-    
-    /* Action Buttons */
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-      padding: 20px;
-      background: white;
-      border-top: 1px solid #eee;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .action-buttons button {
-      flex: 1;
-      padding: 12px;
-      margin: 0;
-      font-size: 14px;
-    }
-    
-    /* Modal */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .modal-box {
-      background: white;
-      border-radius: 12px 12px 0 0;
-      padding: 20px;
-      width: 100%;
-      max-width: 600px;
-      animation: slideUp 0.3s ease;
-    }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
-    .time-picker-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-    .time-field label { margin-top: 0; margin-bottom: 8px; font-size: 13px; }
-    .time-field input { margin: 0 0 10px 0; }
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-    }
-    .modal-actions button { margin: 0; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="header">
-    <h1>⏰ TIME TRACKER</h1>
-    <p>AnlConstructions</p>
-  </div>
+<div class="header"><h1>&#9200; TIME TRACKER</h1><p>AnlConstructions</p></div>
 
-  <!-- LOGIN PAGE -->
-  <div id="page-login" class="page">
-    <div class="login-form">
-      <div id="error-msg" class="hidden error"></div>
-      
-      <label>Select Worker</label>
-      <select id="worker-select">
-        <option value="">-- Choose --</option>
-        <option value="Adam">Adam</option>
-        <option value="James">James</option>
-        <option value="Brady">Brady</option>
-        <option value="Drew">Drew</option>
-      </select>
-      
-      <label>PIN (4 digits)</label>
-      <input type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="0000">
-      
-      <button class="btn-primary" onclick="login()">Login</button>
-    </div>
-  </div>
+<div id="page-login">
+  <div id="err" class="hidden alert-error"></div>
+  <label>Select Worker</label>
+  <select id="worker-select">
+    <option value="">-- Choose --</option>
+    <option value="Adam">Adam</option>
+    <option value="James">James</option>
+    <option value="Brady">Brady</option>
+    <option value="Drew">Drew</option>
+  </select>
+  <label>PIN (4 digits)</label>
+  <input type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="0000">
+  <button class="btn-primary" onclick="login()">Login</button>
+</div>
 
-  <!-- TRACKER PAGE -->
-  <div id="page-tracker" class="hidden page">
-    <div class="tracker-header">
-      <h2 class="worker-name" id="worker-name"></h2>
-      <p class="week-label" id="week-label"></p>
-    </div>
-    
-    <div id="success-msg" class="hidden success" style="margin: 15px;"></div>
-    
-    <div class="week-nav">
-      <button onclick="prevWeek()">‹</button>
-      <span id="nav-week-label"></span>
-      <button onclick="nextWeek()">›</button>
-    </div>
-    
-    <table class="timesheet-table">
-      <thead>
-        <tr>
-          <th>Day</th>
-          <th style="text-align: center;">Start</th>
-          <th style="text-align: center;">End</th>
-          <th style="text-align: right;">Hours</th>
-          <th style="text-align: right;">Pay</th>
-        </tr>
-      </thead>
-      <tbody id="table-body"></tbody>
-      <tfoot>
-        <tr class="totals-row">
-          <td colspan="3">TOTAL</td>
-          <td class="hours-cell" id="total-hours">0.0h</td>
-          <td class="pay-cell" id="total-pay">$0.00</td>
-        </tr>
-      </tfoot>
-    </table>
-    
-    <div style="padding: 20px; background: white; border-top: 1px solid #eee; margin-top: 80px;">
-      <h3 style="margin-top: 0; border: none; padding: 0;">Lunch & Notes</h3>
-      
-      <label>Lunch Break (minutes)</label>
-      <select id="lunch-select">
-        <option value="0">None</option>
-        <option value="30">30 min</option>
-        <option value="45">45 min</option>
-        <option value="60">60 min</option>
-      </select>
-      
-      <label>Job Location</label>
-      <input type="text" id="job-input" placeholder="e.g. 123 Main St">
-      
-      <label>Materials / Notes</label>
-      <textarea id="materials-input" placeholder="Concrete, nails, tools..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; font-family: inherit; margin: 0 0 15px 0;"></textarea>
-      
-      <button class="btn-primary" onclick="saveEntry()">SAVE ENTRY</button>
-    </div>
-    
-    <div style="height: 100px;"></div>
+<div id="page-tracker" class="hidden">
+  <div class="t-header">
+    <div class="t-name" id="t-name"></div>
+    <div class="t-week" id="t-week"></div>
   </div>
+  <div class="week-nav">
+    <button onclick="prevWeek()">&#8249;</button>
+    <span id="nav-label"></span>
+    <button onclick="nextWeek()">&#8250;</button>
+  </div>
+  <table class="ts-table">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th style="text-align:center">In</th>
+        <th style="text-align:center">Out</th>
+        <th style="text-align:right">Hrs</th>
+        <th style="text-align:right">Gross</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+    <tfoot>
+      <tr class="totals-row">
+        <td colspan="3">TOTAL</td>
+        <td class="col-hrs" id="tot-hrs">0.0h</td>
+        <td class="col-pay" id="tot-gross">$0.00</td>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="payslip">
+    <h3>&#128196; Weekly Payslip</h3>
+    <div class="ps-row"><span class="ps-lbl">Hourly Rate</span><span class="ps-val" id="ps-rate">$0.00/h</span></div>
+    <div class="ps-row"><span class="ps-lbl">Total Hours</span><span class="ps-val" id="ps-hrs">0.0 hrs</span></div>
+    <div class="ps-row"><span class="ps-lbl">Gross Pay</span><span class="ps-val green" id="ps-gross">$0.00</span></div>
+    <hr class="ps-div">
+    <div class="ps-row"><span class="ps-lbl">Tax Withheld (20%)</span><span class="ps-val red" id="ps-tax">-$0.00</span></div>
+    <div class="ps-row"><span class="ps-lbl">Super (11.5%)</span><span class="ps-val blue" id="ps-super">$0.00</span></div>
+    <div class="ps-net"><div class="lbl">&#128181; NET PAY</div><div class="amt" id="ps-net">$0.00</div></div>
+  </div>
+  <div class="notes-section">
+    <h3>Lunch &amp; Notes</h3>
+    <label>Lunch Break</label>
+    <select id="lunch-select">
+      <option value="0">None</option>
+      <option value="30">30 min</option>
+      <option value="45">45 min</option>
+      <option value="60">60 min</option>
+    </select>
+    <label>Job Location</label>
+    <input type="text" id="job-input" placeholder="e.g. 123 Main St">
+    <label>Materials / Notes</label>
+    <textarea id="materials-input" rows="3" placeholder="Concrete, nails, tools..."></textarea>
+    <button class="btn-primary" onclick="saveEntry()">SAVE ENTRY</button>
+  </div>
+  <div class="spacer"></div>
+</div>
 
-  <!-- TIME PICKER MODAL -->
-  <div id="time-modal" class="modal-overlay hidden" onclick="closeModal(event)">
-    <div class="modal-box" onclick="event.stopPropagation()">
-      <div class="modal-title" id="modal-title">Set Time</div>
-      
-      <div class="time-picker-grid">
-        <div class="time-field">
-          <label>Hour (0-23)</label>
-          <input type="number" id="modal-hour" min="0" max="23" placeholder="0" style="font-size: 18px; text-align: center;">
-        </div>
-        <div class="time-field">
-          <label>Minute (0-59)</label>
-          <input type="number" id="modal-min" min="0" max="59" placeholder="0" style="font-size: 18px; text-align: center;">
+<div id="time-modal" class="modal-overlay hidden" onclick="overlayTap(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-title">Set Time</div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div class="drum-row">
+      <div class="drum-col">
+        <label>Hour</label>
+        <div class="drum" id="drum-h" onscroll="onScroll('h')">
+          <div class="drum-band"></div>
+          <div class="drum-sp"></div>
+          <div class="drum-sp"></div>
         </div>
       </div>
-      
-      <div class="modal-actions">
-        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" onclick="confirmTime()">Set Time</button>
+      <div class="colon-sep">:</div>
+      <div class="drum-col">
+        <label>Min</label>
+        <div class="drum" id="drum-m" onscroll="onScroll('m')">
+          <div class="drum-band"></div>
+          <div class="drum-sp"></div>
+          <div class="drum-sp"></div>
+        </div>
+      </div>
+      <div class="drum-col">
+        <label>AM/PM</label>
+        <div class="drum" id="drum-p" onscroll="onScroll('p')">
+          <div class="drum-band"></div>
+          <div class="drum-sp"></div>
+          <div class="drum-sp"></div>
+        </div>
       </div>
     </div>
+    <div class="modal-btns">
+      <button class="btn-secondary" style="flex:1;margin:0" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" style="flex:2;margin:0" onclick="confirmTime()">Set Time &#10003;</button>
+    </div>
   </div>
+</div>
 
-  <div id="action-buttons" class="action-buttons hidden">
-    <button class="btn-secondary" onclick="clearWeek()">Clear</button>
-    <button class="btn-secondary" onclick="logout()">Settings</button>
-    <button class="btn-secondary" onclick="exportCSV()">Export</button>
-  </div>
-
-  <script>
-    const WORKERS = {
-      'Adam': { id: 'ba97c403-596f-483b-8dd5-3c11131db62a', pin: '7264', rate: 81.49 },
-      'James': { id: '7b309a07-cfea-4e78-8109-e7b7d40f4cf4', pin: '5891', rate: 48.65 },
-      'Brady': { id: 'be3737d8-0235-4fb8-85a6-6150659a278f', pin: '3742', rate: 29.95 },
-      'Drew': { id: '3397c62c-b85e-4cda-ac24-fd138b1eb74a', pin: '8159', rate: 81.49 }
-    };
-
-    const TAX_RATE = 0.20;
-    const SUPER_RATE = 0.115;
-
-    let currentUser = null;
-    let entries = {};
-    let weekDays = [];
-    let currentWeekOffset = 0;
-    let pickerTarget = null;
-
-    // Initialize
-    function init() {
-      buildWeekDays();
-      renderTable();
-      document.getElementById('action-buttons').classList.remove('hidden');
-    }
-
-    // Build week days
-    function buildWeekDays() {
-      const now = new Date();
-      const day = now.getDay();
-      const diff = (day === 0) ? -6 : 1 - day;
-      const monday = new Date(now);
-      monday.setDate(now.getDate() + diff + currentWeekOffset * 7);
-      monday.setHours(0, 0, 0, 0);
-
-      const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-      const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      weekDays = [];
-
-      for (let i = 0; i < 5; i++) {
-        const d = new Date(monday);
-        d.setDate(monday.getDate() + i);
-        const dd = d.getDate();
-        const mon = monthNames[d.getMonth()];
-        const yyyy = d.getFullYear();
-        const isoDate = `${yyyy}-${String(d.getMonth()+1).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
-        weekDays.push({
-          name: dayNames[i],
-          date: d,
-          label: `${dayNames[i]} ${dd} ${mon} ${yyyy}`,
-          isoDate: isoDate
-        });
-      }
-
-      const startDate = weekDays[0];
-      const endDate = weekDays[4];
-      document.getElementById('week-label').textContent = `${startDate.date.getDate()} – ${endDate.date.getDate()} ${monthNames[endDate.date.getMonth()]} ${endDate.date.getFullYear()}`;
-      document.getElementById('nav-week-label').textContent = `${startDate.date.getDate()} – ${endDate.date.getDate()} ${monthNames[endDate.date.getMonth()]}`;
-    }
-
-    function prevWeek() {
-      currentWeekOffset--;
-      buildWeekDays();
-      loadEntries();
-    }
-
-    function nextWeek() {
-      currentWeekOffset++;
-      buildWeekDays();
-      loadEntries();
-    }
-
-    function showError(msg) {
-      const el = document.getElementById('error-msg');
-      el.textContent = msg;
-      el.classList.remove('hidden');
-    }
-
-    function showSuccess(msg) {
-      const el = document.getElementById('success-msg');
-      el.textContent = msg;
-      el.classList.remove('hidden');
-      setTimeout(() => el.classList.add('hidden'), 2000);
-    }
-
-    function login() {
-      const name = document.getElementById('worker-select').value;
-      const pin = document.getElementById('pin-input').value;
-      const err = document.getElementById('error-msg');
-      err.classList.add('hidden');
-
-      if (!name) {
-        showError('Please select a worker');
-        return;
-      }
-
-      if (pin.length !== 4) {
-        showError('PIN must be 4 digits');
-        return;
-      }
-
-      const worker = WORKERS[name];
-      if (!worker || pin !== worker.pin) {
-        showError('Invalid PIN');
-        return;
-      }
-
-      currentUser = { name, ...worker };
-      document.getElementById('page-login').classList.add('hidden');
-      document.getElementById('page-tracker').classList.remove('hidden');
-      document.getElementById('worker-name').textContent = name;
-      currentWeekOffset = 0;
-      buildWeekDays();
-      loadEntries();
-    }
-
-    function logout() {
-      currentUser = null;
-      entries = {};
-      document.getElementById('page-tracker').classList.add('hidden');
-      document.getElementById('page-login').classList.remove('hidden');
-      document.getElementById('worker-select').value = '';
-      document.getElementById('pin-input').value = '';
-    }
-
-    function openTimeModal(day, isStart) {
-      pickerTarget = { day, isStart };
-      document.getElementById('modal-title').textContent = isStart ? `Set Start Time - ${day.label}` : `Set End Time - ${day.label}`;
-      
-      const entry = entries[day.isoDate];
-      const defaultHour = isStart ? 7 : 17;
-      const defaultMin = 0;
-      
-      document.getElementById('modal-hour').value = defaultHour;
-      document.getElementById('modal-min').value = defaultMin;
-      
-      document.getElementById('time-modal').classList.remove('hidden');
-    }
-
-    function closeModal(event) {
-      if (event && event.target !== document.getElementById('time-modal')) return;
-      document.getElementById('time-modal').classList.add('hidden');
-    }
-
-    function confirmTime() {
-      if (!pickerTarget) return;
-      const hour = parseInt(document.getElementById('modal-hour').value) || 0;
-      const min = parseInt(document.getElementById('modal-min').value) || 0;
-      
-      const day = pickerTarget.day;
-      const date = new Date(day.date);
-      date.setHours(hour, min, 0);
-      const time = date.toISOString();
-
-      const payload = {
-        user_id: currentUser.id,
-        day: day.isoDate
-      };
-      if (pickerTarget.isStart) {
-        payload.start_time = time;
-      } else {
-        payload.end_time = time;
-      }
-
-      fetch('/api/entry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      .then(r => r.json())
-      .then(d => {
-        showSuccess('Time set');
-        loadEntries();
-        closeModal();
-      })
-      .catch(e => showError('Error: ' + e.message));
-    }
-
-    function saveEntry() {
-      if (!currentUser) return;
-      const lunch = parseInt(document.getElementById('lunch-select').value);
-      const job = document.getElementById('job-input').value;
-      const materials = document.getElementById('materials-input').value;
-
-      // Save for today
-      const today = weekDays[new Date().getDay() - 1] || weekDays[0];
-      
-      fetch('/api/entry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: currentUser.id,
-          day: today.isoDate,
-          lunch_mins: lunch,
-          job: job,
-          materials: materials
-        })
-      })
-      .then(r => r.json())
-      .then(d => {
-        showSuccess('Entry saved');
-        loadEntries();
-      })
-      .catch(e => showError('Error: ' + e.message));
-    }
-
-    function loadEntries() {
-      if (!currentUser) return;
-
-      fetch('/api/entries/' + currentUser.id)
-        .then(r => r.json())
-        .then(data => {
-          entries = {};
-          if (Array.isArray(data)) {
-            data.forEach(e => {
-              entries[e.day] = e;
-            });
-          }
-          renderTable();
-        })
-        .catch(e => console.error('Load error:', e));
-    }
-
-    function renderTable() {
-      const tbody = document.getElementById('table-body');
-      tbody.innerHTML = '';
-      let totalHours = 0;
-      let totalPay = 0;
-
-      weekDays.forEach(day => {
-        const entry = entries[day.isoDate];
-        let hours = 0;
-        let pay = 0;
-
-        if (entry && entry.start_time && entry.end_time) {
-          const start = new Date(entry.start_time);
-          const end = new Date(entry.end_time);
-          const mins = (end - start) / 60000 - (entry.lunch_mins || 0);
-          hours = Math.max(0, mins / 60);
-          pay = hours * currentUser.rate;
-          totalHours += hours;
-          totalPay += pay;
-        }
-
-        const startTime = entry && entry.start_time ? new Date(entry.start_time).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : 'Set';
-        const endTime = entry && entry.end_time ? new Date(entry.end_time).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : 'Set';
-
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td class="day-cell">${day.name}</td>
-          <td class="time-cell" onclick="openTimeModal(${JSON.stringify(day).replace(/"/g, '&quot;')}, true)">${startTime}</td>
-          <td class="time-cell" onclick="openTimeModal(${JSON.stringify(day).replace(/"/g, '&quot;')}, false)">${endTime}</td>
-          <td class="hours-cell">${hours.toFixed(1)}h</td>
-          <td class="pay-cell">$${pay.toFixed(2)}</td>
-        `;
-        tbody.appendChild(row);
-      });
-
-      document.getElementById('total-hours').textContent = totalHours.toFixed(1) + 'h';
-      document.getElementById('total-pay').textContent = '$' + totalPay.toFixed(2);
-    }
-
-    function clearWeek() {
-      if (confirm('Clear all times for this week?')) {
-        // Implementation: delete all entries for this week
-        alert('Clear feature coming soon');
-      }
-    }
-
-    function exportCSV() {
-      let csv = 'Day,Start,End,Hours,Pay\n';
-      weekDays.forEach(day => {
-        const entry = entries[day.isoDate];
-        const start = entry && entry.start_time ? new Date(entry.start_time).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
-        const end = entry && entry.end_time ? new Date(entry.end_time).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }) : '';
-        let hours = 0;
-        if (entry && entry.start_time && entry.end_time) {
-          const mins = (new Date(entry.end_time) - new Date(entry.start_time)) / 60000 - (entry.lunch_mins || 0);
-          hours = Math.max(0, mins / 60);
-        }
-        const pay = hours * currentUser.rate;
-        csv += `${day.name},${start},${end},${hours.toFixed(1)},${pay.toFixed(2)}\n`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `timesheet-${currentUser.name}.csv`;
-      a.click();
-    }
-
-    // Start
-    init();
-  </script>
+<div id="toast" class="hidden"></div>
+<div id="action-bar" class="action-bar hidden">
+  <button class="btn-secondary" onclick="exportCSV()">Export CSV</button>
+  <button class="btn-secondary" onclick="logout()">&#8592; Logout</button>
+</div>
+<script src="app.js"></script>
 </body>
 </html>
