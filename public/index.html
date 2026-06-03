@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AnlConstructions Time Tracker</title>
+  <title>ANL Constructions Time Tracker</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="header"><h1>&#9200; TIME TRACKER</h1><p>AnlConstructions</p></div>
+<div class="header"><h1>&#9200; TIME TRACKER</h1><p>ANL Constructions</p></div>
 
+<!-- LOGIN -->
 <div id="page-login">
   <div id="err" class="hidden alert-error"></div>
   <label>Select Worker</label>
@@ -24,6 +25,7 @@
   <button class="btn-primary" onclick="login()">Login</button>
 </div>
 
+<!-- TRACKER -->
 <div id="page-tracker" class="hidden">
   <div class="t-header">
     <div class="t-name" id="t-name"></div>
@@ -40,81 +42,80 @@
         <th>Day</th>
         <th style="text-align:center">In</th>
         <th style="text-align:center">Out</th>
+        <th style="text-align:center">Lunch</th>
         <th style="text-align:right">Hrs</th>
-        <th style="text-align:right">Gross</th>
+        <th style="text-align:right">Pay</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
     <tfoot>
       <tr class="totals-row">
-        <td colspan="3">TOTAL</td>
+        <td colspan="4">TOTAL</td>
         <td class="col-hrs" id="tot-hrs">0.0h</td>
         <td class="col-pay" id="tot-gross">$0.00</td>
       </tr>
     </tfoot>
   </table>
+
   <div class="payslip">
     <h3>&#128196; Weekly Payslip</h3>
     <div class="ps-row"><span class="ps-lbl">Hourly Rate</span><span class="ps-val" id="ps-rate">$0.00/h</span></div>
     <div class="ps-row"><span class="ps-lbl">Total Hours</span><span class="ps-val" id="ps-hrs">0.0 hrs</span></div>
     <div class="ps-row"><span class="ps-lbl">Gross Pay</span><span class="ps-val green" id="ps-gross">$0.00</span></div>
     <hr class="ps-div">
-    <div class="ps-row"><span class="ps-lbl">Tax Withheld (20%)</span><span class="ps-val red" id="ps-tax">-$0.00</span></div>
-    <div class="ps-row"><span class="ps-lbl">Super (11.5%)</span><span class="ps-val blue" id="ps-super">$0.00</span></div>
+    <div class="ps-row"><span class="ps-lbl">Tax Withheld</span><span class="ps-val red" id="ps-tax">-$0.00</span></div>
+    <div class="ps-row"><span class="ps-lbl">Superannuation</span><span class="ps-val blue" id="ps-super">$0.00</span></div>
     <div class="ps-net"><div class="lbl">&#128181; NET PAY</div><div class="amt" id="ps-net">$0.00</div></div>
     <button class="btn-download" onclick="exportCSV()">&#8681; Download Payslip (PDF)</button>
   </div>
+
   <div class="notes-section">
-    <h3>Lunch &amp; Notes</h3>
-    <label>Lunch Break</label>
-    <select id="lunch-select">
-      <option value="0">None</option>
-      <option value="30">30 min</option>
-      <option value="45">45 min</option>
-      <option value="60">60 min</option>
-    </select>
+    <h3>Notes</h3>
     <label>Job Location</label>
     <input type="text" id="job-input" placeholder="e.g. 123 Main St">
     <label>Materials / Notes</label>
     <textarea id="materials-input" rows="3" placeholder="Concrete, nails, tools..."></textarea>
-    <button class="btn-primary" onclick="saveEntry()">SAVE ENTRY</button>
+    <button class="btn-primary" onclick="saveNotes()">SAVE NOTES</button>
   </div>
   <div class="spacer"></div>
 </div>
 
+<!-- TIME MODAL -->
 <div id="time-modal" class="modal-overlay hidden" onclick="overlayTap(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <div class="modal-title" id="modal-title">Set Time</div>
     <div class="modal-sub" id="modal-sub"></div>
-    <div class="drum-row">
-      <div class="drum-col">
-        <label>Hour</label>
-        <div id="drum-h"></div>
-      </div>
-      <div class="colon-sep">:</div>
-      <div class="drum-col">
-        <label>Min</label>
-        <div id="drum-m"></div>
-      </div>
-      <div class="drum-col">
-        <label>AM/PM</label>
-        <div id="drum-p"></div>
-      </div>
-    </div>
+    <input type="time" id="time-input" class="time-input">
     <div class="modal-btns">
-      <button class="btn-secondary" style="flex:1;margin:0" onclick="closeModal()">Cancel</button>
-      <button class="btn-primary" style="flex:2;margin:0" onclick="confirmTime()">Set Time &#10003;</button>
+      <button class="btn-secondary" style="flex:1" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary"   style="flex:2" onclick="confirmTime()">Set &#10003;</button>
+    </div>
+  </div>
+</div>
+
+<!-- LUNCH MODAL -->
+<div id="lunch-modal" class="modal-overlay hidden" onclick="lunchOverlayTap(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="lunch-modal-title">Set Lunch Break</div>
+    <div class="modal-sub" id="lunch-modal-sub"></div>
+    <div class="lunch-options">
+      <button class="lunch-btn" onclick="setLunch(0)">None</button>
+      <button class="lunch-btn" onclick="setLunch(30)">30 min</button>
+      <button class="lunch-btn" onclick="setLunch(45)">45 min</button>
+      <button class="lunch-btn" onclick="setLunch(60)">60 min</button>
+    </div>
+    <div class="modal-btns" style="margin-top:10px">
+      <button class="btn-secondary" style="flex:1" onclick="closeLunchModal()">Cancel</button>
     </div>
   </div>
 </div>
 
 <div id="toast" class="hidden"></div>
 <div id="action-bar" class="action-bar hidden">
-  <button class="btn-secondary" onclick="exportCSV()">Export CSV</button>
   <button class="btn-secondary" onclick="logout()">&#8592; Logout</button>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="drum.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
