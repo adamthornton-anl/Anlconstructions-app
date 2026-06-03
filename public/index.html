@@ -89,28 +89,16 @@
     <div class="drum-row">
       <div class="drum-col">
         <label>Hour</label>
-        <div class="drum" id="drum-h" onscroll="onScroll('h')">
-          <div class="drum-band"></div>
-          <div class="drum-sp"></div>
-          <div class="drum-sp"></div>
-        </div>
+        <div id="drum-h"></div>
       </div>
       <div class="colon-sep">:</div>
       <div class="drum-col">
         <label>Min</label>
-        <div class="drum" id="drum-m" onscroll="onScroll('m')">
-          <div class="drum-band"></div>
-          <div class="drum-sp"></div>
-          <div class="drum-sp"></div>
-        </div>
+        <div id="drum-m"></div>
       </div>
       <div class="drum-col">
         <label>AM/PM</label>
-        <div class="drum" id="drum-p" onscroll="onScroll('p')">
-          <div class="drum-band"></div>
-          <div class="drum-sp"></div>
-          <div class="drum-sp"></div>
-        </div>
+        <div id="drum-p"></div>
       </div>
     </div>
     <div class="modal-btns">
@@ -125,6 +113,7 @@
   <button class="btn-secondary" onclick="exportCSV()">Export CSV</button>
   <button class="btn-secondary" onclick="logout()">&#8592; Logout</button>
 </div>
+<script src="drum.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

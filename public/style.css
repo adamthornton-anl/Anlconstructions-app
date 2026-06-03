@@ -76,26 +76,76 @@ tr.today-row { background: #fffde7 !important; }
 @keyframes su { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
 .modal-sub   { font-size: 13px; color: #999; margin-bottom: 20px; }
-.drum-row { display: flex; gap: 10px; margin-bottom: 22px; align-items: flex-start; }
-.drum-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
+/* ── iPhone Drum Roller ── */
+.drum-row { display: flex; gap: 6px; margin-bottom: 22px; align-items: flex-end; justify-content: center; }
+.drum-col { display: flex; flex-direction: column; align-items: center; flex: 1; max-width: 110px; }
 .drum-col label { font-size: 11px; color: #999; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
-.drum {
-  width: 100%; height: 150px; overflow-y: scroll; border: 2px solid #0066cc; border-radius: 10px;
-  scroll-snap-type: y mandatory; scrollbar-width: none; -ms-overflow-style: none; position: relative;
+
+.drum-roller {
+  position: relative;
+  width: 100%;
+  height: 220px;  /* 5 visible rows × 44px */
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
 }
-.drum::-webkit-scrollbar { display: none; }
-.drum-band {
-  position: absolute; top: 50px; left: 0; right: 0; height: 50px;
-  background: rgba(0,102,204,.06); border-top: 1px solid rgba(0,102,204,.2); border-bottom: 1px solid rgba(0,102,204,.2);
-  pointer-events: none;
+.drum-roller:active { cursor: grabbing; }
+
+.drum-track {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  will-change: transform;
 }
-.drum-sp   { height: 50px; flex-shrink: 0; }
+
 .drum-item {
-  height: 50px; display: flex; align-items: center; justify-content: center;
-  font-size: 22px; font-weight: 600; scroll-snap-align: center; color: #ccc; user-select: none;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 500;
+  color: #bbb;
+  transition: color .1s, font-size .1s, font-weight .1s, opacity .1s;
+  user-select: none;
 }
-.drum-item.sel { color: #111; }
-.colon-sep { font-size: 28px; font-weight: 700; color: #333; padding-top: 38px; flex: 0; }
+.drum-item.drum-sel   { font-size: 28px; font-weight: 700; color: #111; }
+.drum-item.drum-near  { font-size: 22px; color: #777; opacity: .85; }
+.drum-item.drum-far   { font-size: 18px; color: #bbb; opacity: .5; }
+.drum-item.drum-gone  { opacity: .15; font-size: 16px; }
+.drum-item.drum-pad   { pointer-events: none; }
+
+/* Selection bar */
+.drum-bar {
+  position: absolute;
+  top: calc(50% - 22px);
+  left: 8px; right: 8px;
+  height: 44px;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Top & bottom gradient fades */
+.drum-fade {
+  position: absolute;
+  left: 0; right: 0;
+  height: 88px;  /* 2 items */
+  pointer-events: none;
+  z-index: 3;
+}
+.drum-fade-top {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+}
+.drum-fade-bot {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+}
+
+.colon-sep { font-size: 28px; font-weight: 700; color: #333; padding-bottom: 12px; flex: 0; align-self: center; }
 .modal-btns { display: flex; gap: 10px; }
 .modal-btns button { margin: 0; }
 
