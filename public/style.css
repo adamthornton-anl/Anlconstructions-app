@@ -70,19 +70,19 @@ tr.today-row { background: #fffde7 !important; }
 
 .modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,.65);
+  background: rgba(0,0,0,.5);
   display: flex; align-items: flex-end; justify-content: center; z-index: 1000;
 }
 .modal-box {
-  background: #1c1c1e;
+  background: white;
   border-radius: 16px 16px 0 0;
-  padding: 24px 20px 44px;
+  padding: 24px 20px 40px;
   width: 100%; max-width: 600px;
   animation: su .28s cubic-bezier(0.32,0.72,0,1);
 }
 @keyframes su { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.modal-title { font-size: 17px; font-weight: 700; color: white; text-align: center; margin-bottom: 2px; }
-.modal-sub   { font-size: 13px; color: #666; text-align: center; margin-bottom: 16px; }
+.modal-title { font-size: 17px; font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: 2px; }
+.modal-sub   { font-size: 13px; color: #999; text-align: center; margin-bottom: 16px; }
 
 /* ── Drum row ── */
 .drum-row {
@@ -91,7 +91,7 @@ tr.today-row { background: #fffde7 !important; }
   justify-content: center;
   gap: 0;
   margin-bottom: 20px;
-  height: 260px;
+  height: 250px;
   position: relative;
 }
 .drum-col {
@@ -102,7 +102,7 @@ tr.today-row { background: #fffde7 !important; }
   align-items: center;
 }
 .drum-col label {
-  font-size: 11px; color: #555;
+  font-size: 11px; color: #999;
   font-weight: 700; text-transform: uppercase;
   letter-spacing: .5px; margin-bottom: 4px; margin-top: 0;
 }
@@ -110,44 +110,59 @@ tr.today-row { background: #fffde7 !important; }
 /* DrumRoller */
 .dr-wrap {
   position: relative;
-  width: 100%; height: 260px;
+  width: 100%; height: 250px;
   overflow: hidden;
   cursor: grab;
   user-select: none; -webkit-user-select: none;
   touch-action: none;
 }
 .dr-wrap:active { cursor: grabbing; }
+
 .dr-scroller {
   position: absolute;
   left: 0; right: 0;
   top: 50%;
   will-change: transform;
 }
+
 .dr-item {
-  height: 52px;
+  height: 50px;
   display: flex; align-items: center; justify-content: center;
   font-size: 20px; font-weight: 400;
-  color: rgba(255,255,255,0.18);
+  color: rgba(0,0,0,0.18);
   transition: color 0.1s, font-size 0.1s, font-weight 0.1s;
   user-select: none; -webkit-user-select: none;
 }
-.dr-item.dr-sel  { font-size: 30px; font-weight: 600; color: rgba(255,255,255,1); }
-.dr-item.dr-near { font-size: 24px; font-weight: 400; color: rgba(255,255,255,0.5); }
-.dr-item.dr-far  { font-size: 19px; color: rgba(255,255,255,0.2); }
-.dr-item.dr-gone { font-size: 15px; color: rgba(255,255,255,0.07); }
+.dr-item.dr-sel  { font-size: 30px; font-weight: 600; color: rgba(0,0,0,0.88); }
+.dr-item.dr-near { font-size: 24px; font-weight: 400; color: rgba(0,0,0,0.45); }
+.dr-item.dr-far  { font-size: 19px; color: rgba(0,0,0,0.18); }
+.dr-item.dr-gone { font-size: 15px; color: rgba(0,0,0,0.07); }
 .dr-item.dr-pad  { pointer-events: none; }
-/* Pill highlight */
+
+/* Selection pill */
 .dr-pill {
   position: absolute;
-  top: calc(50% - 26px);
-  left: 4px; right: 4px; height: 52px;
-  background: rgba(255,255,255,0.11);
-  border-radius: 12px;
+  top: calc(50% - 25px);
+  left: 4px; right: 4px; height: 50px;
+  background: #f0f0f0;
+  border-radius: 10px;
   pointer-events: none; z-index: 2;
 }
+
 /* Fades */
-.dr-fade { position: absolute; left: 0; right: 0; height: 104px; pointer-events: none; z-index: 3; }
-.dr-fade-top { top: 0;    background: linear-gradient(to bottom, #1c1c1e 0%, transparent 100%); }
+.dr-fade { position: absolute; left: 0; right: 0; height: 100px; pointer-events: none; z-index: 3; }
+.dr-fade-top { top: 0;    background: linear-gradient(to bottom, white 0%, transparent 100%); }
+.dr-fade-bot { bottom: 0; background: linear-gradient(to top,   white 0%, transparent 100%); }
+
+.colon-sep {
+  font-size: 28px; font-weight: 600;
+  color: #333;
+  flex: 0 0 20px; text-align: center;
+  align-self: center; margin-top: 16px;
+}
+
+.modal-btns { display: flex; gap: 10px; }
+.modal-btns button { margin: 0; }
 .dr-fade-bot { bottom: 0; background: linear-gradient(to top,   #1c1c1e 0%, transparent 100%); }
 
 .colon-sep {

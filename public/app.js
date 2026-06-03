@@ -1,11 +1,10 @@
 // ─── Config ───────────────────────────────────────────────────────────────────
 var WORKERS = {
-  Adam:  {id:'ba97c403-596f-483b-8dd5-3c11131db62a', pin:'7264', rate:81.49},
-  James: {id:'7b309a07-cfea-4e78-8109-e7b7d40f4cf4', pin:'5891', rate:48.65},
-  Brady: {id:'be3737d8-0235-4fb8-85a6-6150659a278f', pin:'3742', rate:29.95},
-  Drew:  {id:'3397c62c-b85e-4cda-ac24-fd138b1eb74a', pin:'8159', rate:81.49}
+  Adam:  {id:'ba97c403-596f-483b-8dd5-3c11131db62a', pin:'7264', rate:81.49,  weeklyGross:3015.04, weeklyTax:692,    weeklySuper:323.04},
+  James: {id:'7b309a07-cfea-4e78-8109-e7b7d40f4cf4', pin:'5891', rate:48.65,  weeklyGross:1800.00, weeklyTax:400,    weeklySuper:216.00},
+  Brady: {id:'be3737d8-0235-4fb8-85a6-6150659a278f', pin:'3742', rate:29.95,  weeklyGross:1108.00, weeklyTax:178,    weeklySuper:132.96},
+  Drew:  {id:'3397c62c-b85e-4cda-ac24-fd138b1eb74a', pin:'8159', rate:81.49,  weeklyGross:3015.04, weeklyTax:692,    weeklySuper:323.04}
 };
-var TAX = 0.20, SUPER = 0.115;
 var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var DNAMES = ['Mon','Tue','Wed','Thu','Fri'];
 var user = null, entries = {}, weekDays = [], weekOffset = 0, pickTarget = null;
@@ -229,7 +228,10 @@ function renderTable() {
   document.getElementById('tot-hrs').textContent  = totHrs.toFixed(1) + 'h';
   document.getElementById('tot-gross').textContent = '$' + totGross.toFixed(2);
 
-  var tax = totGross * TAX, superC = totGross * SUPER, net = totGross - tax;
+  var ratio  = totHrs / 37;
+  var tax    = user.weeklyTax   * ratio;
+  var superC = user.weeklySuper * ratio;
+  var net    = totGross - tax;
   document.getElementById('ps-rate').textContent  = '$' + user.rate.toFixed(2) + '/h';
   document.getElementById('ps-hrs').textContent   = totHrs.toFixed(2) + ' hrs';
   document.getElementById('ps-gross').textContent = '$' + totGross.toFixed(2);
@@ -258,7 +260,10 @@ function exportCSV() {
             job: (e && e.job) || '', lunch: (e && e.lunch_mins) || 0};
   });
 
-  var tax = totGross * TAX, superC = totGross * SUPER, net = totGross - tax;
+  var ratio  = totHrs / 37;
+  var tax    = user.weeklyTax   * ratio;
+  var superC = user.weeklySuper * ratio;
+  var net    = totGross - tax;
   var weekLabel = weekDays[0].date.getDate() + ' ' + MONTHS[weekDays[0].date.getMonth()] +
                   ' - ' + weekDays[4].date.getDate() + ' ' + MONTHS[weekDays[4].date.getMonth()] +
                   ' ' + weekDays[4].date.getFullYear();
