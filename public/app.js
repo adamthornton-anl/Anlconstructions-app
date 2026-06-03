@@ -49,6 +49,10 @@ function hilite(d, idx) {
   });
 }
 
+function vibrate(ms) {
+  if (navigator.vibrate) navigator.vibrate(ms || 10);
+}
+
 function onScroll(k) {
   var ids = {h:'drum-h', m:'drum-m', p:'drum-p'};
   clearTimeout(snapT[k]);
@@ -56,8 +60,10 @@ function onScroll(k) {
     var d = document.getElementById(ids[k]);
     var idx = Math.round(d.scrollTop / 50);
     d.scrollTo({top: idx * 50, behavior: 'smooth'});
+    var prev = parseInt(d.dataset.lastIdx || -1);
+    if (prev !== idx) { vibrate(8); d.dataset.lastIdx = idx; }
     hilite(d, idx);
-  }, 120);
+  }, 80);
 }
 
 function openTimeModal(dayObj, isStart) {
@@ -91,6 +97,7 @@ function closeModal() {
 
 function confirmTime() {
   if (!pickTarget) return;
+  vibrate(20);
   var h24 = parseInt(drumGet('drum-h')) % 12;
   if (drumGet('drum-p') === 'PM') h24 += 12;
   var min = parseInt(drumGet('drum-m')) || 0;
@@ -237,6 +244,7 @@ function renderTable() {
   // Attach click handlers using stored ISO dates
   tbody.querySelectorAll('.col-time').forEach(function(td) {
     td.addEventListener('click', function() {
+      vibrate(12);
       var iso = td.dataset.iso;
       var isStart = td.dataset.start === '1';
       var dayObj = weekDays.find(function(d){ return d.isoDate === iso; });
@@ -257,22 +265,102 @@ function renderTable() {
 }
 
 function exportCSV() {
-  var csv = 'Day,Date,Start,End,Hours,Gross,Tax,Super,Net\n';
-  weekDays.forEach(function(day) {
+  var totHrs = 0, totGross = 0;
+  var fmt = function(ts){ return new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true}); };
+
+  // Build rows
+  var rows = weekDays.map(function(day) {
     var e = entries[day.isoDate];
-    var fmt = function(ts){ return new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit'}); };
-    var s  = (e && e.start_time) ? fmt(e.start_time) : '';
-    var en = (e && e.end_time)   ? fmt(e.end_time)   : '';
+    var s  = (e && e.start_time) ? fmt(e.start_time) : '--';
+    var en = (e && e.end_time)   ? fmt(e.end_time)   : '--';
     var hrs = 0;
     if (e && e.start_time && e.end_time) {
       var mins = (new Date(e.end_time) - new Date(e.start_time)) / 60000 - (e.lunch_mins || 0);
       hrs = Math.max(0, mins / 60);
     }
-    var gross = hrs * user.rate, tax = gross * TAX, superC = gross * SUPER, net = gross - tax;
-    csv += day.name + ',' + day.isoDate + ',' + s + ',' + en + ',' + hrs.toFixed(2) + ',' + gross.toFixed(2) + ',' + tax.toFixed(2) + ',' + superC.toFixed(2) + ',' + net.toFixed(2) + '\n';
+    var gross = hrs * user.rate;
+    totHrs += hrs; totGross += gross;
+    return {day: day.name, date: day.isoDate, start: s, end: en, hrs: hrs, gross: gross,
+            job: (e && e.job) || '', lunch: (e && e.lunch_mins) || 0};
   });
-  var blob = new Blob([csv], {type: 'text/csv'});
+
+  var tax = totGross * TAX, superC = totGross * SUPER, net = totGross - tax;
+  var weekLabel = weekDays[0].date.getDate() + ' ' + MONTHS[weekDays[0].date.getMonth()] +
+                  ' – ' + weekDays[4].date.getDate() + ' ' + MONTHS[weekDays[4].date.getMonth()] +
+                  ' ' + weekDays[4].date.getFullYear();
+  var generated = new Date().toLocaleDateString('en-AU', {day:'2-digit', month:'long', year:'numeric'});
+
+  var rowsHtml = rows.map(function(r) {
+    return '<tr>' +
+      '<td>' + r.day + '</td>' +
+      '<td>' + r.date + '</td>' +
+      '<td style="text-align:center">' + r.start + '</td>' +
+      '<td style="text-align:center">' + r.end + '</td>' +
+      '<td style="text-align:center">' + (r.lunch ? r.lunch + ' min' : '--') + '</td>' +
+      '<td style="text-align:right">' + (r.hrs > 0 ? r.hrs.toFixed(2) : '--') + '</td>' +
+      '<td style="text-align:right">' + (r.gross > 0 ? '$' + r.gross.toFixed(2) : '--') + '</td>' +
+      '<td style="color:#666">' + (r.job || '--') + '</td>' +
+    '</tr>';
+  }).join('');
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    + '<title>Payslip - ' + user.name + '</title>'
+    + '<style>'
+    + 'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:0;padding:30px;background:#f5f5f5;color:#1a1a1a;}'
+    + '.wrapper{max-width:700px;margin:0 auto;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);}'
+    + '.top-bar{background:#1a1a1a;color:white;padding:28px 30px;display:flex;justify-content:space-between;align-items:center;}'
+    + '.company{font-size:22px;font-weight:800;letter-spacing:1px;}'
+    + '.doc-title{font-size:13px;opacity:.6;margin-top:4px;}'
+    + '.badge{background:#0066cc;color:white;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:700;}'
+    + '.meta{padding:24px 30px;display:grid;grid-template-columns:1fr 1fr;gap:16px;border-bottom:2px solid #f0f0f0;}'
+    + '.meta-item .lbl{font-size:11px;font-weight:700;text-transform:uppercase;color:#999;letter-spacing:.5px;}'
+    + '.meta-item .val{font-size:15px;font-weight:600;margin-top:4px;}'
+    + 'table{width:100%;border-collapse:collapse;}'
+    + 'thead{background:#f8f8f8;}'
+    + 'th{padding:10px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:#666;letter-spacing:.5px;border-bottom:2px solid #ddd;}'
+    + 'td{padding:11px 12px;border-bottom:1px solid #eee;font-size:13px;}'
+    + 'tr:last-child td{border-bottom:none;}'
+    + '.summary{padding:24px 30px;background:#f8f8f8;border-top:2px solid #ddd;}'
+    + '.sum-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid #eee;}'
+    + '.sum-row:last-child{border-bottom:none;}'
+    + '.sum-lbl{color:#666;}'
+    + '.sum-val{font-weight:700;}'
+    + '.green{color:#28a745;} .red{color:#dc3545;} .blue{color:#0066cc;}'
+    + '.net-bar{background:#1a1a1a;color:white;padding:20px 30px;display:flex;justify-content:space-between;align-items:center;}'
+    + '.net-bar .lbl{font-size:14px;font-weight:600;opacity:.8;}'
+    + '.net-bar .amt{font-size:28px;font-weight:800;color:#4dd480;}'
+    + '.footer{padding:16px 30px;text-align:center;font-size:11px;color:#bbb;border-top:1px solid #eee;}'
+    + '</style></head><body>'
+    + '<div class="wrapper">'
+    + '<div class="top-bar">'
+    + '<div><div class="company">ANL CONSTRUCTIONS</div><div class="doc-title">Weekly Payslip</div></div>'
+    + '<div class="badge">PAYSLIP</div>'
+    + '</div>'
+    + '<div class="meta">'
+    + '<div class="meta-item"><div class="lbl">Employee</div><div class="val">' + user.name + '</div></div>'
+    + '<div class="meta-item"><div class="lbl">Week</div><div class="val">' + weekLabel + '</div></div>'
+    + '<div class="meta-item"><div class="lbl">Hourly Rate</div><div class="val">$' + user.rate.toFixed(2) + '/hr</div></div>'
+    + '<div class="meta-item"><div class="lbl">Generated</div><div class="val">' + generated + '</div></div>'
+    + '</div>'
+    + '<table><thead><tr>'
+    + '<th>Day</th><th>Date</th><th style="text-align:center">Start</th><th style="text-align:center">End</th>'
+    + '<th style="text-align:center">Lunch</th><th style="text-align:right">Hours</th><th style="text-align:right">Gross</th><th>Job</th>'
+    + '</tr></thead><tbody>' + rowsHtml + '</tbody></table>'
+    + '<div class="summary">'
+    + '<div class="sum-row"><span class="sum-lbl">Total Hours</span><span class="sum-val">' + totHrs.toFixed(2) + ' hrs</span></div>'
+    + '<div class="sum-row"><span class="sum-lbl">Gross Pay</span><span class="sum-val green">$' + totGross.toFixed(2) + '</span></div>'
+    + '<div class="sum-row"><span class="sum-lbl">Tax Withheld (20%)</span><span class="sum-val red">-$' + tax.toFixed(2) + '</span></div>'
+    + '<div class="sum-row"><span class="sum-lbl">Superannuation (11.5%)</span><span class="sum-val blue">$' + superC.toFixed(2) + '</span></div>'
+    + '</div>'
+    + '<div class="net-bar"><span class="lbl">&#128181; NET PAY (Take-home)</span><span class="amt">$' + net.toFixed(2) + '</span></div>'
+    + '<div class="footer">ANL Constructions &bull; Generated ' + generated + ' &bull; Confidential</div>'
+    + '</div></body></html>';
+
+  var blob = new Blob([html], {type: 'text/html'});
   var url  = URL.createObjectURL(blob);
   var a    = document.createElement('a');
-  a.href = url; a.download = 'timesheet-' + user.name + '.csv'; a.click();
+  a.href = url;
+  a.download = 'Payslip-' + user.name + '-' + weekDays[0].isoDate + '.html';
+  a.click();
+  showToast('&#8681; Payslip downloaded');
 }
