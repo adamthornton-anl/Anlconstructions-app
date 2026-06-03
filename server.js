@@ -16,7 +16,7 @@ const supabase     = createClient(SUPABASE_URL, SUPABASE_KEY);
 const resend       = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const ADMIN_EMAIL  = 'adam_thornton@y7mail.com';
-const FROM_EMAIL   = 'payroll@anlconstructions.com.au'; // update once domain verified in Resend
+const FROM_EMAIL   = 'onboarding@resend.dev'; // Resend test domain (works without verification)
 
 const WORKERS = {
   'ba97c403-596f-483b-8dd5-3c11131db62a': { name:'Adam',  rate:81.49,  weeklyGross:3015.04, weeklyTax:692,    weeklySuper:323.04 },
