@@ -284,10 +284,12 @@ function exportCSV() {
   doc.setTextColor(26, 26, 26);
   var metaY = 36;
   var metaItems = [
-    ['EMPLOYEE', user.name],
+    ['EMPLOYEE', user.name === 'Adam' ? 'Adam Conan Thornton' : user.name],
     ['WEEK', weekLabel],
     ['HOURLY RATE', '$' + user.rate.toFixed(2) + '/hr'],
-    ['GENERATED', generated]
+    ['GENERATED', generated],
+    ['ABN', '61 957 816 341'],
+    ['TFN', user.name === 'Adam' ? '394 424 934' : 'N/A']
   ];
   metaItems.forEach(function(m, i) {
     var x = margin + (i % 2) * 90;
@@ -298,10 +300,10 @@ function exportCSV() {
     doc.text(m[1], x, y + 6);
   });
   doc.setDrawColor(220,220,220); doc.setLineWidth(0.4);
-  doc.line(margin, metaY + 28, W - margin, metaY + 28);
+  doc.line(margin, metaY + 42, W - margin, metaY + 42);
 
   // Table
-  var tY = metaY + 34;
+  var tY = metaY + 48;
   var cols = [
     {label:'DAY',   w:18, align:'left'},
     {label:'DATE',  w:28, align:'left'},
