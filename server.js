@@ -121,17 +121,108 @@ app.post('/api/entry', async (req, res) => {
   }
 });
 
-// API: Get entries
+// API: Get entries (current week Mon-Fri)
 app.get('/api/entries/:user_id', async (req, res) => {
   try {
+    // Calculate current week's Monday and Friday dates
+    const now = new Date();
+    const day = now.getDay(); // 0=Sun
+    const diff = (day === 0) ? -6 : 1 - day;
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + diff);
+    monday.setHours(0, 0, 0, 0);
+    const friday = new Date(monday);
+    friday.setDate(monday.getDate() + 4);
+    friday.setHours(23, 59, 59, 999);
+
+    // Query entries with start_time in current week
     const { data: entries, error } = await supabase
       .from('time_entries')
       .select('*')
       .eq('user_id', req.params.user_id)
-      .order('day');
+      .gte('start_time', monday.toISOString())
+      .lte('start_time', friday.toISOString())
+      .order('start_time');
+
+    // Fallback: also query by day name if no start_time filter works
+    if (error) {
+      // Fallback to old query without date filter
+      const { data: allEntries, error: err2 } = await supabase
+        .from('time_entries')
+        .select('*')
+        .eq('user_id', req.params.user_id)
+        .order('day');
+      if (err2) throw err2;
+      res.json(allEntries || []);
+      return;
+    }
+
+    res.json(entries || []);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// API: Payslip for current week
+app.get('/api/payslip/:user_id', async (req, res) => {
+  try {
+    const TAX_RATE   = 0.20;
+    const SUPER_RATE = 0.115;
+    const WORKERS = {
+      'ba97c403-596f-483b-8dd5-3c11131db62a': { name: 'Adam',  rate: 81.49 },
+      '7b309a07-cfea-4e78-8109-e7b7d40f4cf4': { name: 'James', rate: 48.65 },
+      'be3737d8-0235-4fb8-85a6-6150659a278f': { name: 'Brady', rate: 29.95 },
+      '3397c62c-b85e-4cda-ac24-fd138b1eb74a': { name: 'Drew',  rate: 81.49 }
+    };
+
+    const worker = WORKERS[req.params.user_id];
+    if (!worker) return res.status(404).json({ error: 'Worker not found' });
+
+    const now = new Date();
+    const day = now.getDay();
+    const diff = (day === 0) ? -6 : 1 - day;
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + diff);
+    monday.setHours(0, 0, 0, 0);
+    const friday = new Date(monday);
+    friday.setDate(monday.getDate() + 4);
+    friday.setHours(23, 59, 59, 999);
+
+    const { data: entries, error } = await supabase
+      .from('time_entries')
+      .select('*')
+      .eq('user_id', req.params.user_id)
+      .gte('start_time', monday.toISOString())
+      .lte('start_time', friday.toISOString());
 
     if (error) throw error;
-    res.json(entries || []);
+
+    let totalHours = 0;
+    (entries || []).forEach(e => {
+      if (e.start_time && e.end_time) {
+        const start = new Date(e.start_time);
+        const end   = new Date(e.end_time);
+        const mins  = (end - start) / 60000 - (e.lunch_mins || 0);
+        totalHours += Math.max(0, mins / 60);
+      }
+    });
+
+    const gross = totalHours * worker.rate;
+    const tax   = gross * TAX_RATE;
+    const super_ = gross * SUPER_RATE;
+    const net   = gross - tax;
+
+    res.json({
+      worker: worker.name,
+      rate: worker.rate,
+      total_hours: Math.round(totalHours * 100) / 100,
+      gross_pay: Math.round(gross * 100) / 100,
+      tax_withholding: Math.round(tax * 100) / 100,
+      super_contribution: Math.round(super_ * 100) / 100,
+      net_pay: Math.round(net * 100) / 100,
+      week_start: monday.toISOString().split('T')[0],
+      week_end: friday.toISOString().split('T')[0]
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

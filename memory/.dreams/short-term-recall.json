@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-03T08:26:21.485Z",
+  "updatedAt": "2026-06-03T09:33:30.078Z",
   "entries": {
     "memory:memory/2026-06-01.md:1:48": {
       "key": "memory:memory/2026-06-01.md:1:48",
@@ -73,20 +73,21 @@
       "endLine": 57,
       "source": "memory",
       "snippet": "# 2026-06-01 — Telegram Setup + App Build Kickoff ## Telegram Connected ✅ - Bot: @Anlconstructions_bot - Adam's Telegram ID: 8855418763 - Status: Full pairing complete ## Time Tracking App Spec ### Users - Adam (owner/admin dashboard) - 2 workers (check-in/out interface) - **Total: 3 users** ### Core Features 1. **Check-in/Check-out** - Workers tap button to check in (timestamp) - Workers tap button to check out (GPS location auto-captured) - Simple, fast interface for on-site use 2. **Lunch Breaks** - Auto-deduction (confirm duration with Adam) - Automatic when clocked out - Subtracted from hours worked 3. **Materials/Supply Requests** - Workers type notes during",
-      "recallCount": 6,
+      "recallCount": 7,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 5.087069157256272,
+      "totalScore": 5.718609285751896,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-01T09:52:16.728Z",
-      "lastRecalledAt": "2026-06-03T08:25:35.147Z",
+      "lastRecalledAt": "2026-06-03T09:33:30.078Z",
       "queryHashes": [
         "dff5482b5263",
         "f2ad1411e04c",
         "2aea1a45b1ac",
         "c0585de75389",
         "2ead30cf759d",
-        "b90797301aa1"
+        "b90797301aa1",
+        "e4d0a60a1753"
       ],
       "recallDays": [
         "2026-06-01",
@@ -144,16 +145,17 @@
       "endLine": 170,
       "source": "memory",
       "snippet": "- **Drew:** $112.10/hour | PIN: 8159 **Master Override:** 1322 (works for any worker name, Adam can log in as anyone) ### Pending Features (Not Yet Built) - ⏳ **Google Calendar Integration** — Pull events from adam_thornton@y7mail.com - ⏳ **Weekly SMS Summaries** — Auto-text to Adam (0421 447 653) & Drew (0417 914 721) every Friday 5:30pm - Include: Daily breakdown, each worker's total hours, pay calculations - ⏳ **Running Calendar Display** — Show current date/week in app ### GitHub Credentials - Username: adamthornton-anl - Repo: anlconstructions-timetracker - Branch: main ### Tech Stack - Pure HTML/CSS/JavaScript - GitHub Pages (free hosting) - Browser localStorage (data storage) -",
-      "recallCount": 2,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1.6316963757163716,
+      "totalScore": 2.2633929607066188,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-01T23:21:38.401Z",
-      "lastRecalledAt": "2026-06-03T08:26:21.485Z",
+      "lastRecalledAt": "2026-06-03T09:33:30.078Z",
       "queryHashes": [
         "c0585de75389",
-        "8da7ff4d3c4b"
+        "8da7ff4d3c4b",
+        "e4d0a60a1753"
       ],
       "recallDays": [
         "2026-06-01",
@@ -248,16 +250,17 @@
       "endLine": 147,
       "source": "memory",
       "snippet": "✅ Check-in — Records start_time ✅ Check-out — Records end_time ✅ Lunch selector — Deducts from hours ✅ Job field — Saves location ✅ Materials field — Saves supplies needed HOURS CALCULATION: ✅ 8:00 AM to 5:00 PM = 9 hours ✅ Minus 1 hour lunch = 8.0 hours ✅ Pay calculation: 8.0 × $29.95 (Brady) = $239.60 CHART & DISPLAY: ✅ Week grid shows Mon-Fri ✅ Hours per day calculated ✅ Total hours summed ✅ Total pay calculated ✅ Updates live as entries saved ``` --- ## Files ``` /home/agent/workspace/ ├── public/index.html ← Frontend (all pages + logic) ├── api.js ← Backend API ├── package.json ← Dependencies ├── vercel.json ← Vercel config ├── rend",
-      "recallCount": 2,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 2,
+      "totalScore": 2.631576189053844,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-03T08:25:35.147Z",
-      "lastRecalledAt": "2026-06-03T08:26:21.485Z",
+      "lastRecalledAt": "2026-06-03T09:33:30.078Z",
       "queryHashes": [
         "b90797301aa1",
-        "8da7ff4d3c4b"
+        "8da7ff4d3c4b",
+        "e4d0a60a1753"
       ],
       "recallDays": [
         "2026-06-03"
@@ -280,15 +283,16 @@
       "endLine": 51,
       "source": "memory",
       "snippet": "# COMPLETE WORKING APP — June 2, 2026 — FULLY TESTED ✅ ## STATUS: REBUILT & VERIFIED — ALL PAGES WORKING --- ## Pages Built ### 1. Login Page (`id=\"page-login\"`) - Worker selection dropdown (Adam, James, Brady, Drew with rates) - PIN input (4 digits, numeric keypad on mobile) - Error display for invalid login - Login button - **Fully functional and tested** ### 2. Time Tracker Page (`id=\"page-tracker\"`) **Shown after successful login, hidden at first** - Welcome message with worker name - Real-time digital clock (HH:MM:SS format, updates every second) - **Check In button** — Saves current time as start_time - **Check Out button** — Saves current time as end_time - Lunch break selector (",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 1.6314002569835848,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-03T08:26:21.485Z",
-      "lastRecalledAt": "2026-06-03T08:26:21.485Z",
+      "lastRecalledAt": "2026-06-03T09:33:30.078Z",
       "queryHashes": [
-        "8da7ff4d3c4b"
+        "8da7ff4d3c4b",
+        "e4d0a60a1753"
       ],
       "recallDays": [
         "2026-06-03"
@@ -311,15 +315,16 @@
       "endLine": 98,
       "source": "memory",
       "snippet": "- Updates live as entries are saved --- ## Technical Details ### Frontend (`public/index.html`) - Single-page app (SPA) - Two main sections: login & tracker - Uses `App` object with methods: - `init()` — Initialize app - `selectWorker(name)` — Select worker - `login()` — Validate PIN & authenticate - `checkIn()` — POST start_time to API - `checkOut()` — POST end_time to API - `save()` — POST full entry (lunch, job, materials) - `loadEntries()` — GET entries from API - `renderWeek()` — Display hours chart - `logout()` — Clear session & reset form ### Backend (`api.js`) - Express.js server - Routes: - `POST /api/login` — Verify worker + PIN - `POST /api/entry` — Creat",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 1.6314721289916598,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-03T08:26:21.485Z",
-      "lastRecalledAt": "2026-06-03T08:26:21.485Z",
+      "lastRecalledAt": "2026-06-03T09:33:30.078Z",
       "queryHashes": [
-        "8da7ff4d3c4b"
+        "8da7ff4d3c4b",
+        "e4d0a60a1753"
       ],
       "recallDays": [
         "2026-06-03"
@@ -333,6 +338,37 @@
         "express.js",
         "api/login",
         "api/entry"
+      ]
+    },
+    "memory:memory/2026-06-03.md:1:42": {
+      "key": "memory:memory/2026-06-03.md:1:42",
+      "path": "memory/2026-06-03.md",
+      "startLine": 1,
+      "endLine": 42,
+      "source": "memory",
+      "snippet": "# 2026-06-03 — Fresh Deployment Complete ✅ ## Summary Rebuilt the entire app from scratch with a clean GitHub repo and fresh Vercel deployment. ## What Was Done 1. **Created new GitHub repo:** `Anlconstructions-app` 2. **Rebuilt cleanly:** - `server.js` — Express backend - `public/index.html` — Frontend with improved UI - `vercel.json` — Proper routing config - `package.json` — Dependencies 3. **Deployed to Vercel** with auto-deployment on git push ## Live App **URL:** https://anlconstructions-app.vercel.app/ ✅ ## Worker Credentials | Name | PIN | |------|-----| | Adam | 7264 | | James | 5891 | | Brady | 3742 | | Drew | 8159 | ## Features Working ✅ Worker login with PIN ✅",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.6319066678958447,
+      "maxScore": 0.6319066678958447,
+      "firstRecalledAt": "2026-06-03T09:33:30.078Z",
+      "lastRecalledAt": "2026-06-03T09:33:30.078Z",
+      "queryHashes": [
+        "e4d0a60a1753"
+      ],
+      "recallDays": [
+        "2026-06-03"
+      ],
+      "conceptTags": [
+        "anlconstructions-app",
+        "server.js",
+        "public/index.html",
+        "vercel.json",
+        "package.json",
+        "auto-deployment",
+        "anlconstructions-app.vercel.app",
+        "fresh"
       ]
     }
   }
