@@ -288,8 +288,8 @@ function exportCSV() {
     ['WEEK', weekLabel],
     ['HOURLY RATE', '$' + user.rate.toFixed(2) + '/hr'],
     ['GENERATED', generated],
-    ['ABN', '61 957 816 341'],
-    ['TFN', user.name === 'Adam' ? '394 424 934' : 'N/A']
+    ['EMPLOYER ABN', 'ANL Constructions  61 957 816 341'],
+    ['EMPLOYEE TFN', user.name === 'Adam' ? '394 424 934' : 'N/A']
   ];
   metaItems.forEach(function(m, i) {
     var x = margin + (i % 2) * 90;
