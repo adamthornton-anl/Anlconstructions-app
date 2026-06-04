@@ -28,7 +28,7 @@ const WORKERS = {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function fmtTime(ts) {
   if (!ts) return '--';
-  return new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true, timeZone:'Australia/Sydney'});
+  return new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true, timeZone:'Australia/Perth'});
 }
 
 function calcHours(entry) {
@@ -38,8 +38,8 @@ function calcHours(entry) {
 }
 
 function todayISO() {
-  const d = new Date();
-  return d.toISOString().split('T')[0];
+  // Use Perth local date (AWST = UTC+8) so the date rolls over at midnight Perth time
+  return new Date().toLocaleDateString('en-CA', {timeZone:'Australia/Perth'});
 }
 
 function currentWeekRange() {
