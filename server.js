@@ -28,7 +28,7 @@ const WORKERS = {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function fmtTime(ts) {
   if (!ts) return '--';
-  return new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true});
+  return new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true, timeZone:'Australia/Sydney'});
 }
 
 function calcHours(entry) {
