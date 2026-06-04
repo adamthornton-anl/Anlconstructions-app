@@ -27,20 +27,45 @@ const WORKERS = {
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+// Times are stored as plain 'HH:MM' strings (e.g. '07:00').
+// Legacy entries may still be ISO timestamps — handle both.
+function toHHMM(ts) {
+  if (!ts) return null;
+  if (/^\d{2}:\d{2}$/.test(ts)) return ts;  // already HH:MM
+  // Legacy ISO: convert using Perth offset (+8h)
+  const d = new Date(ts);
+  const perthMs = d.getTime() + 8 * 60 * 60 * 1000;
+  const p = new Date(perthMs);
+  const h = String(p.getUTCHours()).padStart(2,'0');
+  const m = String(p.getUTCMinutes()).padStart(2,'0');
+  return h + ':' + m;
+}
+
 function fmtTime(ts) {
-  if (!ts) return '--';
-  return new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true, timeZone:'Australia/Perth'});
+  const hhmm = toHHMM(ts);
+  if (!hhmm) return '--';
+  let [h, m] = hhmm.split(':').map(Number);
+  const ampm = h >= 12 ? 'pm' : 'am';
+  h = h % 12 || 12;
+  return h + ':' + String(m).padStart(2,'0') + ' ' + ampm;
 }
 
 function calcHours(entry) {
   if (!entry || !entry.start_time || !entry.end_time) return 0;
-  const mins = (new Date(entry.end_time) - new Date(entry.start_time)) / 60000 - (entry.lunch_mins || 0);
+  const s = toHHMM(entry.start_time), e = toHHMM(entry.end_time);
+  if (!s || !e) return 0;
+  const [sh, sm] = s.split(':').map(Number);
+  const [eh, em] = e.split(':').map(Number);
+  const mins = (eh * 60 + em) - (sh * 60 + sm) - (entry.lunch_mins || 0);
   return Math.max(0, mins / 60);
 }
 
 function todayISO() {
-  // Use Perth local date (AWST = UTC+8) so the date rolls over at midnight Perth time
-  return new Date().toLocaleDateString('en-CA', {timeZone:'Australia/Perth'});
+  // Perth date (AWST = UTC+8)
+  const now = new Date();
+  const perthMs = now.getTime() + 8 * 60 * 60 * 1000;
+  const p = new Date(perthMs);
+  return p.toISOString().split('T')[0];
 }
 
 function currentWeekRange() {
@@ -64,15 +89,6 @@ function currentWeekRange() {
 // ─── API: Health ──────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => res.json({ ok:true, time:new Date().toISOString() }));
 
-// ─── Debug: check timezone output ─────────────────────────────────────────────
-app.get('/api/debug-time', (req, res) => {
-  const ts = '2026-06-03T23:00:00.000Z';
-  const utc = new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true});
-  const perth = new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true, timeZone:'Australia/Perth'});
-  // Manual +8h offset as fallback
-  const manual = (() => { const d = new Date(ts); const h = (d.getUTCHours()+8)%24; const m = d.getUTCMinutes(); const ampm = h>=12?'pm':'am'; return (h%12||12)+':'+(m<10?'0'+m:m)+' '+ampm; })();
-  res.json({ ts, utc, perth, manual, nodeVersion: process.version });
-});
 
 // ─── API: Save entry ──────────────────────────────────────────────────────────
 app.post('/api/entry', async (req, res) => {

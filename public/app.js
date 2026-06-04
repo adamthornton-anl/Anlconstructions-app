@@ -29,6 +29,24 @@ function nowTimeStr() {
   return pad(n.getHours()) + ':' + pad(n.getMinutes());
 }
 
+// Return HH:MM from either a stored HH:MM string or a legacy ISO timestamp
+function fmtHHMM(ts) {
+  if (!ts) return '00:00';
+  if (ts.length === 5) return ts;          // already HH:MM
+  var d = new Date(ts);                    // legacy ISO — use device local time
+  return pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+// Return human-readable 12h time e.g. '7:00 am'
+function fmtDisplay(ts) {
+  if (!ts) return '--';
+  var parts = fmtHHMM(ts).split(':');
+  var h = parseInt(parts[0]), m = parseInt(parts[1]);
+  var ampm = h >= 12 ? 'pm' : 'am';
+  h = h % 12 || 12;
+  return h + ':' + pad(m) + ' ' + ampm;
+}
+
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 function login() {
   var name = document.getElementById('worker-select').value;
@@ -126,8 +144,8 @@ function openTimeModal(dayObj, isStart) {
   if (e) {
     var ts = isStart ? e.start_time : e.end_time;
     if (ts) {
-      var dd = new Date(ts);
-      timeStr = pad(dd.getHours()) + ':' + pad(dd.getMinutes());
+      // ts stored as HH:MM string; handle legacy ISO too
+      timeStr = ts.length === 5 ? ts : ts.substring(11, 16);
     }
   }
   document.getElementById('time-input').value = timeStr;
@@ -153,12 +171,10 @@ function confirmTime() {
   var h = parseInt(parts[0]), m = parseInt(parts[1]);
 
   var dayObj = pickTarget.dayObj, isStart = pickTarget.isStart;
-  var dt = new Date(dayObj.date);
-  dt.setHours(h, m, 0, 0);
-
+  // Store as plain HH:MM — no timezone conversion, no ambiguity
   var payload = {user_id: user.id, day: dayObj.isoDate};
-  if (isStart) payload.start_time = dt.toISOString();
-  else         payload.end_time   = dt.toISOString();
+  if (isStart) payload.start_time = val;
+  else         payload.end_time   = val;
 
   vibrate(15);
   postEntry(payload)
@@ -212,15 +228,14 @@ function renderTable() {
     var e = entries[day.isoDate];
     var hrs = 0, gross = 0;
     if (e && e.start_time && e.end_time) {
-      var mins = (new Date(e.end_time) - new Date(e.start_time)) / 60000 - (e.lunch_mins || 0);
+      var sp = fmtHHMM(e.start_time).split(':'), ep = fmtHHMM(e.end_time).split(':');
+      var mins = (parseInt(ep[0])*60+parseInt(ep[1])) - (parseInt(sp[0])*60+parseInt(sp[1])) - (e.lunch_mins || 0);
       hrs   = Math.max(0, mins / 60);
       gross = hrs * user.rate;
       totHrs  += hrs;
       totGross += gross;
     }
-    var fmt = function(ts) {
-      return new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true});
-    };
+    var fmt = function(ts) { return fmtDisplay(ts); };
     var sLbl = (e && e.start_time) ? fmt(e.start_time) : 'In';
     var eLbl = (e && e.end_time)   ? fmt(e.end_time)   : 'Out';
     var lunchMins = (e && e.lunch_mins) || 0;
@@ -303,15 +318,14 @@ function renderTable() {
 // ─── PDF Export ───────────────────────────────────────────────────────────────
 function exportCSV() {
   var totHrs = 0, totGross = 0;
-  var fmt = function(ts){ return new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true}); };
-
   var rows = weekDays.map(function(day) {
     var e = entries[day.isoDate];
-    var s  = (e && e.start_time) ? fmt(e.start_time) : '--';
-    var en = (e && e.end_time)   ? fmt(e.end_time)   : '--';
+    var s  = (e && e.start_time) ? fmtDisplay(e.start_time) : '--';
+    var en = (e && e.end_time)   ? fmtDisplay(e.end_time)   : '--';
     var hrs = 0;
     if (e && e.start_time && e.end_time) {
-      var mins = (new Date(e.end_time) - new Date(e.start_time)) / 60000 - (e.lunch_mins || 0);
+      var sp2 = fmtHHMM(e.start_time).split(':'), ep2 = fmtHHMM(e.end_time).split(':');
+      var mins = (parseInt(ep2[0])*60+parseInt(ep2[1])) - (parseInt(sp2[0])*60+parseInt(sp2[1])) - (e.lunch_mins || 0);
       hrs = Math.max(0, mins / 60);
     }
     var gross = hrs * user.rate;
