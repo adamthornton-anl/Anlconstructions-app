@@ -64,6 +64,16 @@ function currentWeekRange() {
 // ─── API: Health ──────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => res.json({ ok:true, time:new Date().toISOString() }));
 
+// ─── Debug: check timezone output ─────────────────────────────────────────────
+app.get('/api/debug-time', (req, res) => {
+  const ts = '2026-06-03T23:00:00.000Z';
+  const utc = new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true});
+  const perth = new Date(ts).toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:true, timeZone:'Australia/Perth'});
+  // Manual +8h offset as fallback
+  const manual = (() => { const d = new Date(ts); const h = (d.getUTCHours()+8)%24; const m = d.getUTCMinutes(); const ampm = h>=12?'pm':'am'; return (h%12||12)+':'+(m<10?'0'+m:m)+' '+ampm; })();
+  res.json({ ts, utc, perth, manual, nodeVersion: process.version });
+});
+
 // ─── API: Save entry ──────────────────────────────────────────────────────────
 app.post('/api/entry', async (req, res) => {
   try {
