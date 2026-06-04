@@ -161,52 +161,63 @@ app.post('/api/email/daily', async (req, res) => {
       });
     }
 
-    const tableRows = rows.map(r => `
-      <tr>
-        <td style="padding:10px 14px;font-weight:700;border-bottom:1px solid #eee">${r.name}</td>
-        <td style="padding:10px 14px;border-bottom:1px solid #eee">${r.start}</td>
-        <td style="padding:10px 14px;border-bottom:1px solid #eee">${r.end}</td>
-        <td style="padding:10px 14px;border-bottom:1px solid #eee">${r.lunch}</td>
-        <td style="padding:10px 14px;border-bottom:1px solid #eee;text-align:right">${r.hrs}</td>
-        <td style="padding:10px 14px;border-bottom:1px solid #eee;text-align:right;color:#28a745;font-weight:700">${r.gross}</td>
-        <td style="padding:10px 14px;border-bottom:1px solid #eee;color:#0066cc">${r.job}</td>
-      </tr>`).join('');
-
-    // Separate materials section
-    const matRows = rows.filter(r => r.materials && r.materials !== '--').map(r =>
-      `<tr>
-        <td style="padding:8px 14px;font-weight:700;border-bottom:1px solid #eee;width:100px">${r.name}</td>
-        <td style="padding:8px 14px;border-bottom:1px solid #eee;color:#555">${r.materials}</td>
-      </tr>`).join('');
+    // Build one card per worker
+    const workerCards = rows.map(r => {
+      const hasData = r.start !== '--' || r.end !== '--';
+      return `
+      <div style="margin:0 16px 12px;border:1px solid #e8e8e8;border-radius:10px;overflow:hidden">
+        <!-- Worker name bar -->
+        <div style="background:#f0f0f0;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:800;font-size:15px;color:#1a1a1a">${r.name}</span>
+          <span style="font-size:13px;color:#28a745;font-weight:700">${r.gross}</span>
+        </div>
+        <!-- Time row -->
+        <table style="width:100%;border-collapse:collapse">
+          <tr>
+            <td style="padding:10px 14px;width:25%;border-right:1px solid #f0f0f0">
+              <div style="font-size:10px;color:#999;text-transform:uppercase;margin-bottom:3px">In</div>
+              <div style="font-size:14px;font-weight:600;color:#1a1a1a">${r.start}</div>
+            </td>
+            <td style="padding:10px 14px;width:25%;border-right:1px solid #f0f0f0">
+              <div style="font-size:10px;color:#999;text-transform:uppercase;margin-bottom:3px">Out</div>
+              <div style="font-size:14px;font-weight:600;color:#1a1a1a">${r.end}</div>
+            </td>
+            <td style="padding:10px 14px;width:20%;border-right:1px solid #f0f0f0">
+              <div style="font-size:10px;color:#999;text-transform:uppercase;margin-bottom:3px">Lunch</div>
+              <div style="font-size:14px;font-weight:600;color:#1a1a1a">${r.lunch}</div>
+            </td>
+            <td style="padding:10px 14px;width:30%">
+              <div style="font-size:10px;color:#999;text-transform:uppercase;margin-bottom:3px">Hours</div>
+              <div style="font-size:14px;font-weight:600;color:#1a1a1a">${r.hrs}</div>
+            </td>
+          </tr>
+        </table>
+        <!-- Job -->
+        <div style="padding:8px 14px;border-top:1px solid #f0f0f0;background:#fafafa">
+          <span style="font-size:10px;color:#999;text-transform:uppercase">Job: </span>
+          <span style="font-size:13px;color:#0066cc">${r.job}</span>
+        </div>
+        ${r.materials && r.materials !== '--' ? `
+        <div style="padding:8px 14px;border-top:1px solid #f0f0f0;background:#fffbf0">
+          <span style="font-size:10px;color:#999;text-transform:uppercase">Materials: </span>
+          <span style="font-size:13px;color:#555">${r.materials}</span>
+        </div>` : ''}
+      </div>`;
+    }).join('');
 
     const html = `
-<!DOCTYPE html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:20px;background:#f5f5f5">
-<div style="max-width:700px;margin:0 auto;background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.1)">
-  <div style="background:#1a1a1a;color:white;padding:24px 28px">
-    <div style="font-size:20px;font-weight:800;letter-spacing:1px">ANL CONSTRUCTIONS</div>
-    <div style="font-size:13px;opacity:.6;margin-top:4px">Daily Summary — ${label}</div>
+<!DOCTYPE html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:0;background:#f0f0f0">
+<div style="max-width:480px;margin:0 auto;background:#f0f0f0;padding:16px 0 24px">
+  <!-- Header -->
+  <div style="background:#1a1a1a;color:white;padding:20px 20px 16px;margin-bottom:16px">
+    <div style="font-size:18px;font-weight:800;letter-spacing:1px">ANL CONSTRUCTIONS</div>
+    <div style="font-size:12px;opacity:.6;margin-top:3px">Daily Summary — ${label}</div>
   </div>
-  <table style="width:100%;border-collapse:collapse">
-    <thead>
-      <tr style="background:#f8f8f8">
-        <th style="padding:10px 14px;text-align:left;font-size:11px;color:#999;text-transform:uppercase;border-bottom:2px solid #eee">Worker</th>
-        <th style="padding:10px 14px;text-align:left;font-size:11px;color:#999;text-transform:uppercase;border-bottom:2px solid #eee">In</th>
-        <th style="padding:10px 14px;text-align:left;font-size:11px;color:#999;text-transform:uppercase;border-bottom:2px solid #eee">Out</th>
-        <th style="padding:10px 14px;text-align:left;font-size:11px;color:#999;text-transform:uppercase;border-bottom:2px solid #eee">Lunch</th>
-        <th style="padding:10px 14px;text-align:right;font-size:11px;color:#999;text-transform:uppercase;border-bottom:2px solid #eee">Hours</th>
-        <th style="padding:10px 14px;text-align:right;font-size:11px;color:#999;text-transform:uppercase;border-bottom:2px solid #eee">Gross</th>
-        <th style="padding:10px 14px;text-align:left;font-size:11px;color:#999;text-transform:uppercase;border-bottom:2px solid #eee">Job</th>
-      </tr>
-    </thead>
-    <tbody>${tableRows}</tbody>
-  </table>
-  ${matRows ? `
-  <div style="padding:16px 28px 8px;border-top:2px solid #eee">
-    <div style="font-size:11px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:8px">Materials / Notes</div>
-    <table style="width:100%;border-collapse:collapse">${matRows}</table>
-  </div>` : ''}
-  <div style="padding:16px 28px;font-size:12px;color:#bbb;border-top:1px solid #eee;text-align:center">
-    ANL Constructions · Auto-generated daily summary · Confidential
+  <!-- Worker cards -->
+  ${workerCards}
+  <!-- Footer -->
+  <div style="padding:16px;font-size:11px;color:#aaa;text-align:center">
+    ANL Constructions · Auto-generated · Confidential
   </div>
 </div>
 </body></html>`;
