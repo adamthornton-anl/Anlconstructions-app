@@ -42,6 +42,8 @@ tr.today-row { background: #fffde7 !important; }
 .totals-row { background: #e8f0fe; border-top: 2px solid #0066cc; font-weight: 700; }
 .totals-row td { padding: 13px 7px; font-size: 14px; color: #1a1a1a; }
 
+.materials-section { background: white; padding: 20px; border-top: 1px solid #eee; }
+.materials-section h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
 .payslip { background: white; padding: 20px; border-top: 4px solid #1a1a1a; }
 .payslip h3 { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
 .ps-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #f5f5f5; font-size: 14px; }

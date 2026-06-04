@@ -170,7 +170,13 @@ app.post('/api/email/daily', async (req, res) => {
         <td style="padding:10px 14px;border-bottom:1px solid #eee;text-align:right">${r.hrs}</td>
         <td style="padding:10px 14px;border-bottom:1px solid #eee;text-align:right;color:#28a745;font-weight:700">${r.gross}</td>
         <td style="padding:10px 14px;border-bottom:1px solid #eee;color:#0066cc">${r.job}</td>
-        <td style="padding:10px 14px;border-bottom:1px solid #eee;color:#666;font-size:13px">${r.materials}</td>
+      </tr>`).join('');
+
+    // Separate materials section
+    const matRows = rows.filter(r => r.materials && r.materials !== '--').map(r =>
+      `<tr>
+        <td style="padding:8px 14px;font-weight:700;border-bottom:1px solid #eee;width:100px">${r.name}</td>
+        <td style="padding:8px 14px;border-bottom:1px solid #eee;color:#555">${r.materials}</td>
       </tr>`).join('');
 
     const html = `
@@ -190,11 +196,15 @@ app.post('/api/email/daily', async (req, res) => {
         <th style="padding:10px 14px;text-align:right;font-size:11px;color:#999;text-transform:uppercase;border-bottom:2px solid #eee">Hours</th>
         <th style="padding:10px 14px;text-align:right;font-size:11px;color:#999;text-transform:uppercase;border-bottom:2px solid #eee">Gross</th>
         <th style="padding:10px 14px;text-align:left;font-size:11px;color:#999;text-transform:uppercase;border-bottom:2px solid #eee">Job</th>
-        <th style="padding:10px 14px;text-align:left;font-size:11px;color:#999;text-transform:uppercase;border-bottom:2px solid #eee">Notes</th>
       </tr>
     </thead>
     <tbody>${tableRows}</tbody>
   </table>
+  ${matRows ? `
+  <div style="padding:16px 28px 8px;border-top:2px solid #eee">
+    <div style="font-size:11px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:8px">Materials / Notes</div>
+    <table style="width:100%;border-collapse:collapse">${matRows}</table>
+  </div>` : ''}
   <div style="padding:16px 28px;font-size:12px;color:#bbb;border-top:1px solid #eee;text-align:center">
     ANL Constructions · Auto-generated daily summary · Confidential
   </div>

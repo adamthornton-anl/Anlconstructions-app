@@ -121,13 +121,12 @@ function postEntry(payload) {
 
 function saveNotes() {
   if (!user) return;
-  var job       = document.getElementById('job-input').value;
-  var materials = document.getElementById('materials-input').value;
+  var materials = document.getElementById('materials-input').value.trim();
   var now = new Date();
   var todayIso = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
   var found = weekDays.find(function(d){ return d.isoDate === todayIso; }) || weekDays[0];
-  postEntry({user_id: user.id, day: found.isoDate, job: job, materials: materials})
-    .then(function(){ showToast('✓ Notes saved'); loadEntries(); })
+  postEntry({user_id: user.id, day: found.isoDate, materials: materials})
+    .then(function(){ showToast('✓ Materials saved'); loadEntries(); })
     .catch(function(e){ alert('Error: ' + e.message); });
 }
 
@@ -302,6 +301,20 @@ function renderTable() {
 
   document.getElementById('tot-hrs').textContent   = totHrs.toFixed(1) + 'h';
   document.getElementById('tot-gross').textContent = '$' + totGross.toFixed(2);
+
+  // Populate materials textarea with today's saved materials
+  var now2 = new Date();
+  var todayIso2 = now2.getFullYear() + '-' + pad(now2.getMonth()+1) + '-' + pad(now2.getDate());
+  var todayEntry = entries[todayIso2];
+  document.getElementById('materials-input').value = (todayEntry && todayEntry.materials) || '';
+
+  // Build materials list for the week
+  var matList = document.getElementById('materials-list');
+  if (matList) {
+    var matItems = weekDays.filter(function(d){ return entries[d.isoDate] && entries[d.isoDate].materials; })
+      .map(function(d){ return '<li><strong>' + d.name + ':</strong> ' + entries[d.isoDate].materials + '</li>'; });
+    matList.innerHTML = matItems.length ? '<ul style="margin:8px 0;padding-left:18px">' + matItems.join('') + '</ul>' : '<p style="color:#999;font-size:13px">No materials logged this week.</p>';
+  }
 
   var ratio  = totHrs / 37;
   var tax    = user.weeklyTax   * ratio;
