@@ -3,25 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ANL Constructions Time Tracker</title>
+  <title>Timesheet Pro</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="header"><h1>&#9200; TIME TRACKER</h1><p>ANL Constructions</p></div>
+<div class="header"><h1>⏱️ TIMESHEET PRO</h1><p>Work Hours & Payroll</p></div>
 
 <!-- LOGIN -->
 <div id="page-login">
   <div id="err" class="hidden alert-error"></div>
-  <label>Select Worker</label>
-  <select id="worker-select">
-    <option value="">-- Choose --</option>
-    <option value="Adam">Adam</option>
-    <option value="James">James</option>
-    <option value="Brady">Brady</option>
-    <option value="Drew">Drew</option>
-  </select>
-  <label>PIN (4 digits)</label>
-  <input type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="0000">
+  <label>Username</label>
+  <input type="text" id="username-input" placeholder="your username" autocomplete="username">
+  <label>Password</label>
+  <input type="password" id="password-input" placeholder="••••••••" autocomplete="current-password">
   <button class="btn-primary" onclick="login()">Login</button>
 </div>
 
@@ -68,11 +62,7 @@
     <div class="ps-row"><span class="ps-lbl">Hourly Rate</span><span class="ps-val" id="ps-rate">$0.00/h</span></div>
     <div class="ps-row"><span class="ps-lbl">Total Hours</span><span class="ps-val" id="ps-hrs">0.0 hrs</span></div>
     <div class="ps-row"><span class="ps-lbl">Gross Pay</span><span class="ps-val green" id="ps-gross">$0.00</span></div>
-    <hr class="ps-div">
-    <div class="ps-row"><span class="ps-lbl">Tax Withheld</span><span class="ps-val red" id="ps-tax">-$0.00</span></div>
-    <div class="ps-row"><span class="ps-lbl">Superannuation</span><span class="ps-val blue" id="ps-super">$0.00</span></div>
-    <div class="ps-net"><div class="lbl">&#128181; NET PAY</div><div class="amt" id="ps-net">$0.00</div></div>
-    <button class="btn-download" onclick="exportCSV()">&#8681; Download Payslip (PDF)</button>
+    <div class="ps-net"><div class="lbl">Total Hours × Rate</div><div class="amt" id="ps-net">$0.00</div></div>
   </div>
 
   <div class="notes-section">

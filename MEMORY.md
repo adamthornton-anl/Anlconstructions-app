@@ -23,6 +23,7 @@
 | Drew | 8159 | $81.49 | $3015.04 | $692.00 | $323.04 |
 
 All rates based on 37hr working week. Tax/super scaled proportionally by hours worked.
+Net pay = Gross - Tax - Super
 
 ## Worker UUIDs (Supabase)
 - Adam:  ba97c403-596f-483b-8dd5-3c11131db62a
@@ -35,22 +36,43 @@ All rates based on 37hr working week. Tax/super scaled proportionally by hours w
 - Backend: Express.js + Supabase
 - Hosting: Vercel (auto-deploys on git push to main)
 - Supabase URL: https://tzwsdqbrtohcxzvdfwdw.supabase.co
+- Email: Resend (onboarding@resend.dev sender, working as of 2026-06-03)
 
 ## Key App Features
 - Worker PIN login (client-side)
-- Mon–Fri timesheet with tap-to-set start/end times
-- iPhone-style drum picker (white bg, momentum scroll, haptic)
+- Mon–Fri timesheet with tap-to-set start/end times (native time picker)
+- Time auto-fills current time when tapped
+- Lunch button per row (None/30/45/60 min)
+- Job/client field per day inline in table
 - Payslip PDF download — includes name, ABN, TFN, hours table, tax/super/net
 - Week navigation (prev/next)
+- Daily 5pm email to Adam with all workers hours + jobs + notes
+- Friday 5pm payroll email with full week breakdown per worker
 
 ## Payslip Details
 - Employee full name: Adam Conan Thornton (for Adam's payslips)
 - Employer ABN shown as: ANL Constructions 61 957 816 341
 - Employee TFN shown on PDF only (not visible in app UI)
 - PDF filename: Payslip-{name}-{isoDate}.pdf
+- Net = Gross - Tax - Super
+
+## Email Setup
+- Provider: Resend
+- From: onboarding@resend.dev (test domain, works without verification)
+- To: adam_thornton@y7mail.com
+- RESEND_API_KEY set in Vercel environment variables ✅
+- Daily email tested and confirmed working 2026-06-03
+- Cron: daily Mon-Fri 5pm, Friday payroll 5pm (UTC+10 AEST = 7am UTC)
 
 ## Other Workers
 - Drew phone: 0417 914 721
 
 ## Silent Replies
 When you have nothing to say, respond with ONLY: NO_REPLY
+⚠️ Rules:
+- It must be your ENTIRE message — nothing else
+- Never append it to an actual response (never include "NO_REPLY" in real replies)
+- Never wrap it in markdown or code blocks
+❌ Wrong: "Here's help... NO_REPLY"
+❌ Wrong: "NO_REPLY"
+✅ Right: NO_REPLY

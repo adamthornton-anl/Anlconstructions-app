@@ -1,9 +1,9 @@
 // ─── Config ───────────────────────────────────────────────────────────────────
 var WORKERS = {
-  Adam:  {id:'ba97c403-596f-483b-8dd5-3c11131db62a', pin:'7264', rate:81.49,  weeklyGross:3015.04, weeklyTax:692,    weeklySuper:323.04},
-  James: {id:'7b309a07-cfea-4e78-8109-e7b7d40f4cf4', pin:'5891', rate:48.65,  weeklyGross:1800.00, weeklyTax:400,    weeklySuper:216.00},
-  Brady: {id:'be3737d8-0235-4fb8-85a6-6150659a278f', pin:'3742', rate:29.95,  weeklyGross:1108.00, weeklyTax:178,    weeklySuper:132.96},
-  Drew:  {id:'3397c62c-b85e-4cda-ac24-fd138b1eb74a', pin:'8159', rate:81.49,  weeklyGross:3015.04, weeklyTax:692,    weeklySuper:323.04}
+  adam:  {id:'ba97c403-596f-483b-8dd5-3c11131db62a', name:'Adam',  password:'SecurePass123!', rate:81.49},
+  james: {id:'7b309a07-cfea-4e78-8109-e7b7d40f4cf4', name:'James', password:'SecurePass456!', rate:48.65},
+  brady: {id:'be3737d8-0235-4fb8-85a6-6150659a278f', name:'Brady', password:'SecurePass789!', rate:29.95},
+  drew:  {id:'3397c62c-b85e-4cda-ac24-fd138b1eb74a', name:'Drew',  password:'SecurePass012!', rate:81.49}
 };
 var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var DNAMES = ['Mon','Tue','Wed','Thu','Fri'];
@@ -49,19 +49,19 @@ function fmtDisplay(ts) {
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 function login() {
-  var name = document.getElementById('worker-select').value;
-  var pin  = document.getElementById('pin-input').value;
-  var err  = document.getElementById('err');
+  var username = document.getElementById('username-input').value.toLowerCase().trim();
+  var password = document.getElementById('password-input').value;
+  var err = document.getElementById('err');
   err.classList.add('hidden');
-  if (!name) { err.textContent = 'Please select a worker'; err.classList.remove('hidden'); return; }
-  if (pin.length !== 4) { err.textContent = 'PIN must be 4 digits'; err.classList.remove('hidden'); return; }
-  var w = WORKERS[name];
-  if (!w || pin !== w.pin) { err.textContent = 'Invalid PIN'; err.classList.remove('hidden'); return; }
-  user = {name: name, id: w.id, rate: w.rate, weeklyGross: w.weeklyGross, weeklyTax: w.weeklyTax, weeklySuper: w.weeklySuper};
+  if (!username) { err.textContent = 'Please enter username'; err.classList.remove('hidden'); return; }
+  if (!password) { err.textContent = 'Please enter password'; err.classList.remove('hidden'); return; }
+  var w = WORKERS[username];
+  if (!w || password !== w.password) { err.textContent = 'Invalid username or password'; err.classList.remove('hidden'); return; }
+  user = {name: w.name, id: w.id, rate: w.rate};
   document.getElementById('page-login').classList.add('hidden');
   document.getElementById('page-tracker').classList.remove('hidden');
   document.getElementById('action-bar').classList.remove('hidden');
-  document.getElementById('t-name').textContent = name;
+  document.getElementById('t-name').textContent = w.name;
   weekOffset = 0;
   buildWeekDays();
   loadEntries();
@@ -72,8 +72,8 @@ function logout() {
   document.getElementById('page-tracker').classList.add('hidden');
   document.getElementById('page-login').classList.remove('hidden');
   document.getElementById('action-bar').classList.add('hidden');
-  document.getElementById('worker-select').value = '';
-  document.getElementById('pin-input').value = '';
+  document.getElementById('username-input').value = '';
+  document.getElementById('password-input').value = '';
 }
 
 // ─── Week ─────────────────────────────────────────────────────────────────────
@@ -363,13 +363,13 @@ function exportCSV() {
   doc.setFillColor(26,26,26); doc.rect(0,0,W,28,'F');
   doc.setTextColor(255,255,255);
   doc.setFontSize(18); doc.setFont('helvetica','bold');
-  doc.text('ANL CONSTRUCTIONS', margin, 12);
+  doc.text('TIMESHEET PRO', margin, 12);
   doc.setFontSize(9); doc.setFont('helvetica','normal');
-  doc.text('Weekly Payslip', margin, 20);
+  doc.text('Hours Summary', margin, 20);
   doc.setFillColor(0,102,204);
   doc.roundedRect(W-margin-24, 8, 24, 10, 3, 3, 'F');
   doc.setFontSize(8); doc.setFont('helvetica','bold');
-  doc.text('PAYSLIP', W-margin-12, 14.5, {align:'center'});
+  doc.text('SUMMARY', W-margin-12, 14.5, {align:'center'});
 
   // Meta
   doc.setTextColor(26,26,26);
@@ -379,8 +379,7 @@ function exportCSV() {
     ['WEEK', weekLabel],
     ['HOURLY RATE', '$' + user.rate.toFixed(2) + '/hr'],
     ['GENERATED', generated],
-    ['EMPLOYER ABN', 'ANL Constructions  61 957 816 341'],
-    ['EMPLOYEE TFN', user.name === 'Adam' ? '394 424 934' : 'N/A']
+    ['WORKER TYPE', 'Contractor']
   ];
   metaItems.forEach(function(m, i) {
     var x = margin + (i % 2) * 90;
@@ -463,6 +462,6 @@ function exportCSV() {
   doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(180,180,180);
   doc.text('ANL Constructions  ·  Generated '+generated+'  ·  Confidential', W/2, netY+28, {align:'center'});
 
-  doc.save('Payslip-'+user.name+'-'+weekDays[0].isoDate+'.pdf');
+  doc.save('Hours-'+user.name+'-'+weekDays[0].isoDate+'.pdf');
   showToast('⬇ PDF downloaded');
 }

@@ -19,11 +19,20 @@ const resend       = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_
 const ADMIN_EMAIL  = 'adam_thornton@y7mail.com';
 const FROM_EMAIL   = 'onboarding@resend.dev'; // Resend test domain (works without verification)
 
+// ─── IMPORTANT: UPDATE THESE PASSWORDS IMMEDIATELY ──────────────────────────────
+// These are temporary defaults. Use strong, unique passwords.
+const WORKER_CREDS = {
+  'adam':  'SecurePass123!',
+  'james': 'SecurePass456!',
+  'brady': 'SecurePass789!',
+  'drew':  'SecurePass012!'
+};
+
 const WORKERS = {
-  'ba97c403-596f-483b-8dd5-3c11131db62a': { name:'Adam',  rate:81.49,  weeklyGross:3015.04, weeklyTax:692,    weeklySuper:323.04 },
-  '7b309a07-cfea-4e78-8109-e7b7d40f4cf4': { name:'James', rate:48.65,  weeklyGross:1800.00, weeklyTax:400,    weeklySuper:216.00 },
-  'be3737d8-0235-4fb8-85a6-6150659a278f': { name:'Brady', rate:29.95,  weeklyGross:1108.00, weeklyTax:178,    weeklySuper:132.96 },
-  '3397c62c-b85e-4cda-ac24-fd138b1eb74a': { name:'Drew',  rate:81.49,  weeklyGross:3015.04, weeklyTax:692,    weeklySuper:323.04 }
+  'ba97c403-596f-483b-8dd5-3c11131db62a': { name:'Adam',  rate:81.49  },
+  '7b309a07-cfea-4e78-8109-e7b7d40f4cf4': { name:'James', rate:48.65  },
+  'be3737d8-0235-4fb8-85a6-6150659a278f': { name:'Brady', rate:29.95  },
+  '3397c62c-b85e-4cda-ac24-fd138b1eb74a': { name:'Drew',  rate:81.49  }
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
