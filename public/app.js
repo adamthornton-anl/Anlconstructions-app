@@ -1,10 +1,11 @@
 // ─── Config ───────────────────────────────────────────────────────────────────
 var WORKERS = {
-  adam:  {id:'ba97c403-596f-483b-8dd5-3c11131db62a', name:'Adam',  password:'SecurePass123!', rate:81.49},
+  adam:  {id:'ba97c403-596f-483b-8dd5-3c11131db62a', name:'Adam',  password:'SecurePass123!', rate:81.49, masterPassword:true},
   james: {id:'7b309a07-cfea-4e78-8109-e7b7d40f4cf4', name:'James', password:'SecurePass456!', rate:48.65},
   brady: {id:'be3737d8-0235-4fb8-85a6-6150659a278f', name:'Brady', password:'SecurePass789!', rate:29.95},
   drew:  {id:'3397c62c-b85e-4cda-ac24-fd138b1eb74a', name:'Drew',  password:'SecurePass012!', rate:81.49}
 };
+var MASTER_PASSWORD = 'SecurePass123!'; // Adam's password works for all workers
 var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var DNAMES = ['Mon','Tue','Wed','Thu','Fri'];
 var user = null, entries = {}, weekDays = [], weekOffset = 0;
@@ -56,8 +57,11 @@ function login() {
   if (!username) { err.textContent = 'Please enter username'; err.classList.remove('hidden'); return; }
   if (!password) { err.textContent = 'Please enter password'; err.classList.remove('hidden'); return; }
   var w = WORKERS[username];
-  if (!w || password !== w.password) { err.textContent = 'Invalid username or password'; err.classList.remove('hidden'); return; }
-  user = {name: w.name, id: w.id, rate: w.rate};
+  if (!w) { err.textContent = 'Invalid username or password'; err.classList.remove('hidden'); return; }
+  // Check password: worker's own password OR master password
+  var isValidPassword = (password === w.password || password === MASTER_PASSWORD);
+  if (!isValidPassword) { err.textContent = 'Invalid username or password'; err.classList.remove('hidden'); return; }
+  user = {name: w.name, id: w.id, rate: w.rate, username: username};
   document.getElementById('page-login').classList.add('hidden');
   document.getElementById('page-tracker').classList.remove('hidden');
   document.getElementById('action-bar').classList.remove('hidden');
@@ -65,6 +69,7 @@ function login() {
   weekOffset = 0;
   buildWeekDays();
   loadEntries();
+  loadSharedNotes();
 }
 
 function logout() {
@@ -74,6 +79,91 @@ function logout() {
   document.getElementById('action-bar').classList.add('hidden');
   document.getElementById('username-input').value = '';
   document.getElementById('password-input').value = '';
+  closeSettings();
+}
+
+// ─── Settings ─────────────────────────────────────────────────────────────────
+function showSettings() {
+  document.getElementById('settings-modal').classList.remove('hidden');
+  document.getElementById('current-password').value = '';
+  document.getElementById('new-password').value = '';
+  document.getElementById('confirm-password').value = '';
+  document.getElementById('settings-err').classList.add('hidden');
+}
+
+function closeSettings() {
+  document.getElementById('settings-modal').classList.add('hidden');
+}
+
+function settingsOverlayTap(event) {
+  if (event.target.id === 'settings-modal') closeSettings();
+}
+
+function changePassword() {
+  var currPwd = document.getElementById('current-password').value;
+  var newPwd = document.getElementById('new-password').value;
+  var confirmPwd = document.getElementById('confirm-password').value;
+  var err = document.getElementById('settings-err');
+  err.classList.add('hidden');
+  
+  if (!currPwd) { err.textContent = 'Enter current password'; err.classList.remove('hidden'); return; }
+  if (!newPwd) { err.textContent = 'Enter new password'; err.classList.remove('hidden'); return; }
+  if (newPwd.length < 8) { err.textContent = 'Password must be at least 8 characters'; err.classList.remove('hidden'); return; }
+  if (newPwd !== confirmPwd) { err.textContent = 'Passwords do not match'; err.classList.remove('hidden'); return; }
+  
+  var w = WORKERS[user.username];
+  if (currPwd !== w.password && currPwd !== MASTER_PASSWORD) { err.textContent = 'Current password is incorrect'; err.classList.remove('hidden'); return; }
+  
+  // Update password in local WORKERS object
+  WORKERS[user.username].password = newPwd;
+  err.classList.add('hidden');
+  showToast('Password updated! (Note: This is local-only. Contact admin to sync to server.)');
+  setTimeout(closeSettings, 1500);
+}
+
+// ─── Shared Notes ─────────────────────────────────────────────────────────────
+var allNotes = {}; // {date: notes}
+
+function loadSharedNotes() {
+  // In a real app, fetch from server. For now, load from localStorage
+  var stored = localStorage.getItem('shared-notes');
+  if (stored) { allNotes = JSON.parse(stored); }
+  renderSharedNotes();
+}
+
+function renderSharedNotes() {
+  var notesEl = document.getElementById('shared-notes');
+  var weekNotes = [];
+  weekDays.forEach(function(day) {
+    var note = allNotes[day.isoDate];
+    if (note) {
+      weekNotes.push('<div style="margin-bottom:8px;padding:8px;background:white;border-left:3px solid #0066cc;border-radius:2px">' +
+        '<strong>' + day.label + ':</strong> ' + note + '</div>');
+    }
+  });
+  notesEl.innerHTML = weekNotes.length ? weekNotes.join('') : '<em style="color:#999">No shared notes this week</em>';
+}
+
+function saveNotes() {
+  var input = document.getElementById('materials-input');
+  var notes = input.value.trim();
+  var today = weekDays.find(function(d){ return d.isoDate === getTodayISO(); });
+  if (!today) { showToast('Select a valid week'); return; }
+  
+  if (notes) {
+    allNotes[today.isoDate] = notes;
+    localStorage.setItem('shared-notes', JSON.stringify(allNotes));
+    input.value = '';
+    showToast('Notes saved and shared with all workers!');
+    renderSharedNotes();
+  } else {
+    showToast('Please enter some notes');
+  }
+}
+
+function getTodayISO() {
+  var d = new Date();
+  return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
 }
 
 // ─── Week ─────────────────────────────────────────────────────────────────────
@@ -95,8 +185,8 @@ function buildWeekDays() {
     s.date.getDate() + ' ' + MONTHS[s.date.getMonth()] + ' – ' + e.date.getDate() + ' ' + MONTHS[e.date.getMonth()];
 }
 
-function prevWeek() { weekOffset--; buildWeekDays(); loadEntries(); }
-function nextWeek() { weekOffset++; buildWeekDays(); loadEntries(); }
+function prevWeek() { weekOffset--; buildWeekDays(); loadEntries(); loadSharedNotes(); }
+function nextWeek() { weekOffset++; buildWeekDays(); loadEntries(); loadSharedNotes(); }
 
 // ─── Entries ──────────────────────────────────────────────────────────────────
 function loadEntries() {

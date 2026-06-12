@@ -66,8 +66,9 @@
   </div>
 
   <div class="notes-section">
-    <h3>Notes</h3>
-    <label>Materials / Notes</label>
+    <h3>📝 Shared Notes (All Workers)</h3>
+    <div id="shared-notes" style="background:#f5f5f5;padding:12px;border-radius:4px;margin-bottom:12px;min-height:60px;font-size:13px;color:#555"></div>
+    <label>Add Notes</label>
     <textarea id="materials-input" rows="3" placeholder="Concrete, nails, tools..."></textarea>
     <button class="btn-primary" onclick="saveNotes()">SAVE NOTES</button>
   </div>
@@ -106,7 +107,28 @@
 
 <div id="toast" class="hidden"></div>
 <div id="action-bar" class="action-bar hidden">
+  <button class="btn-secondary" onclick="showSettings()">⚙️ Settings</button>
   <button class="btn-secondary" onclick="logout()">&#8592; Logout</button>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" class="modal-overlay hidden" onclick="settingsOverlayTap(event)">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:400px;max-height:90vh;overflow-y:auto">
+    <div class="modal-title">Settings</div>
+    <div id="settings-err" class="hidden alert-error" style="margin:12px 0;font-size:13px"></div>
+    
+    <div style="padding:12px;">
+      <label style="display:block;margin-top:16px;font-weight:600;font-size:13px">Change Password</label>
+      <input type="password" id="current-password" placeholder="Current password" style="width:100%;padding:8px;margin-top:6px;border:1px solid #ddd;border-radius:4px;font-size:14px" autocomplete="current-password">
+      <input type="password" id="new-password" placeholder="New password (min 8 chars)" style="width:100%;padding:8px;margin-top:8px;border:1px solid #ddd;border-radius:4px;font-size:14px" autocomplete="new-password">
+      <input type="password" id="confirm-password" placeholder="Confirm new password" style="width:100%;padding:8px;margin-top:8px;border:1px solid #ddd;border-radius:4px;font-size:14px" autocomplete="new-password">
+      <button class="btn-primary" style="width:100%;margin-top:12px" onclick="changePassword()">Update Password</button>
+    </div>
+    
+    <div class="modal-btns" style="margin-top:16px">
+      <button class="btn-secondary" style="flex:1" onclick="closeSettings()">Close</button>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>

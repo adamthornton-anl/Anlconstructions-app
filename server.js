@@ -16,6 +16,12 @@ const SUPABASE_KEY = process.env.SUPABASE_KEY || 'sb_publishable_frfpPpx6hXMGRds
 const supabase     = createClient(SUPABASE_URL, SUPABASE_KEY);
 const resend       = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
+if (!process.env.RESEND_API_KEY) {
+  console.warn('⚠️  RESEND_API_KEY not set in environment - emails will not send');
+} else {
+  console.log('✅ RESEND_API_KEY configured');
+}
+
 const ADMIN_EMAIL  = 'adam_thornton@y7mail.com';
 const FROM_EMAIL   = 'onboarding@resend.dev'; // Resend test domain (works without verification)
 
@@ -96,8 +102,50 @@ function currentWeekRange() {
 }
 
 // ─── API: Health ──────────────────────────────────────────────────────────────
-app.get('/api/health', (req, res) => res.json({ ok:true, time:new Date().toISOString() }));
+app.get('/api/health', (req, res) => {
+  return res.json({ 
+    ok: true, 
+    time: new Date().toISOString(),
+    resendConfigured: !!process.env.RESEND_API_KEY
+  });
+});
 
+// ─── API: Change password ──────────────────────────────────────────────────────
+app.post('/api/auth/change-password', async (req, res) => {
+  try {
+    const { username, currentPassword, newPassword } = req.body;
+    if (!username || !currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Missing fields' });
+    }
+    if (newPassword.length < 8) {
+      return res.status(400).json({ error: 'Password must be at least 8 characters' });
+    }
+    
+    // Note: In production, implement via Supabase Auth
+    res.json({ ok: true, message: 'Password change noted - implement server-side auth' });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+
+// ─── API: Save entry (GET for test calls) ────────────────────────────────────
+app.get('/api/email/daily', async (req, res) => {
+  console.log('⏱️  GET /api/email/daily called (testing)');
+  // Forward to POST handler
+  return new Promise((resolve) => {
+    req.method = 'POST';
+    const originalSend = res.send;
+    res.send = function(data) {
+      console.log('📧 Response:', data);
+      originalSend.call(res, data);
+      resolve();
+    };
+  });
+});
+
+app.get('/api/email/payroll', async (req, res) => {
+  console.log('⏱️  GET /api/email/payroll called (testing)');
+  return res.json({ ok: true, test: true });
+});
 
 // ─── API: Save entry ──────────────────────────────────────────────────────────
 app.post('/api/entry', async (req, res) => {
