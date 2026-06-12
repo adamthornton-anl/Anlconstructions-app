@@ -131,6 +131,26 @@
 5. 📋 **TODO:** Verify Vercel env vars (ensure only anon key, not service key)
 6. 📋 **TODO:** Review old emails (may have contained TFN/ABN)
 
+## Features Added (2026-06-12 - Session 2)
+
+### Settings Page
+- Workers can change their own passwords via ⚙️ Settings button
+- Master password enabled: adam's password (SecurePass123!) works for all workers
+- Minimum 8 characters required for new passwords
+- Current password validation required
+
+### Shared Notes
+- All app notes now visible to all workers
+- Displayed in shared section on main tracker
+- Notes persist per day
+- Workers can add/view notes from any user
+
+### Email Issue (PENDING FIX)
+- ⚠️ Emails NOT sending: RESEND_API_KEY missing from Vercel env vars
+- **Required action:** Add RESEND_API_KEY to Vercel Settings → Environment Variables
+- Current schedule: 7 AM UTC Mon-Fri (3 PM AEST)
+- Friday cron also set up but not sending due to missing API key
+
 ## Silent Replies
 When you have nothing to say, respond with ONLY: NO_REPLY
 ⚠️ Rules:
