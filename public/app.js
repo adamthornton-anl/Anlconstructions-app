@@ -555,3 +555,4 @@ function exportCSV() {
   doc.save('Hours-'+user.name+'-'+weekDays[0].isoDate+'.pdf');
   showToast('⬇ PDF downloaded');
 }
+// cache bust 1781274437085569725
