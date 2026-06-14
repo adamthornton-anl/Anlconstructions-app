@@ -1,4 +1,4 @@
-// v3 - Australia/Perth timezone fix
+// v4 - Fix time saving: use service role key, fix upsert logic
 const express    = require('express');
 const cors       = require('cors');
 const path       = require('path');
@@ -12,8 +12,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ─── Clients ──────────────────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://tzwsdqbrtohcxzvdfwdw.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_KEY || 'sb_publishable_frfpPpx6hXMGRdsJrDlW_A_9WTKqN1l';
-const supabase     = createClient(SUPABASE_URL, SUPABASE_KEY);
+// Use service role key (bypasses RLS — safe for server-side use only)
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
+if (!SUPABASE_KEY) {
+  console.error('❌ SUPABASE_KEY env var is not set! Time saving will NOT work.');
+}
+const supabase     = createClient(SUPABASE_URL, SUPABASE_KEY || 'placeholder');
 const resend       = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 if (!process.env.RESEND_API_KEY) {
@@ -102,11 +106,20 @@ function currentWeekRange() {
 }
 
 // ─── API: Health ──────────────────────────────────────────────────────────────
-app.get('/api/health', (req, res) => {
+app.get('/api/health', async (req, res) => {
+  // Test Supabase connectivity
+  let dbOk = false, dbError = null;
+  try {
+    const { error } = await supabase.from('time_entries').select('id').limit(1);
+    if (error) { dbError = error.message; } else { dbOk = true; }
+  } catch (e) { dbError = e.message; }
   return res.json({ 
-    ok: true, 
+    ok: dbOk, 
     time: new Date().toISOString(),
-    resendConfigured: !!process.env.RESEND_API_KEY
+    supabaseConfigured: !!process.env.SUPABASE_KEY,
+    resendConfigured: !!process.env.RESEND_API_KEY,
+    dbOk,
+    dbError
   });
 });
 
@@ -153,9 +166,6 @@ app.post('/api/entry', async (req, res) => {
     const { user_id, day, start_time, end_time, lunch_mins, job, materials } = req.body;
     if (!user_id || !day) return res.status(400).json({ error:'Missing user_id or day' });
 
-    const { data: existing } = await supabase
-      .from('time_entries').select('id').eq('user_id', user_id).eq('day', day).single();
-
     const patch = {};
     if (start_time  !== undefined) patch.start_time  = start_time;
     if (end_time    !== undefined) patch.end_time     = end_time;
@@ -163,18 +173,19 @@ app.post('/api/entry', async (req, res) => {
     if (job         !== undefined) patch.job          = job;
     if (materials   !== undefined) patch.materials    = materials;
 
-    let result;
-    if (existing) {
-      const { data, error } = await supabase.from('time_entries').update(patch).eq('id', existing.id).select().single();
-      if (error) throw error;
-      result = data;
-    } else {
-      const { data, error } = await supabase.from('time_entries').insert([{ user_id, day, ...patch }]).select().single();
-      if (error) throw error;
-      result = data;
-    }
-    res.json(result);
-  } catch (err) { res.status(500).json({ error:err.message }); }
+    // Use upsert with onConflict to atomically insert-or-update
+    // Requires a UNIQUE constraint on (user_id, day) in Supabase
+    const { data, error } = await supabase
+      .from('time_entries')
+      .upsert({ user_id, day, ...patch }, { onConflict: 'user_id,day', ignoreDuplicates: false })
+      .select()
+      .single();
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    console.error('Entry save error:', err.message, err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ─── API: Get entries ─────────────────────────────────────────────────────────
