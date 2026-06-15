@@ -173,15 +173,34 @@ app.post('/api/entry', async (req, res) => {
     if (job         !== undefined) patch.job          = job;
     if (materials   !== undefined) patch.materials    = materials;
 
-    // Use upsert with onConflict to atomically insert-or-update
-    // Requires a UNIQUE constraint on (user_id, day) in Supabase
-    const { data, error } = await supabase
+    // Check if a row exists for this user+day (maybeSingle avoids error on no rows)
+    const { data: existing, error: fetchErr } = await supabase
       .from('time_entries')
-      .upsert({ user_id, day, ...patch }, { onConflict: 'user_id,day', ignoreDuplicates: false })
-      .select()
-      .single();
-    if (error) throw error;
-    res.json(data);
+      .select('id')
+      .eq('user_id', user_id)
+      .eq('day', day)
+      .maybeSingle();
+    if (fetchErr) throw fetchErr;
+
+    let result, saveErr;
+    if (existing) {
+      // Row exists — update it
+      ({ data: result, error: saveErr } = await supabase
+        .from('time_entries')
+        .update(patch)
+        .eq('id', existing.id)
+        .select()
+        .single());
+    } else {
+      // No row yet — insert
+      ({ data: result, error: saveErr } = await supabase
+        .from('time_entries')
+        .insert([{ user_id, day, ...patch }])
+        .select()
+        .single());
+    }
+    if (saveErr) throw saveErr;
+    res.json(result);
   } catch (err) {
     console.error('Entry save error:', err.message, err);
     res.status(500).json({ error: err.message });
