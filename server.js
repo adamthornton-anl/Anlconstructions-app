@@ -161,6 +161,39 @@ app.get('/api/email/payroll', async (req, res) => {
 });
 
 // ─── API: Save entry ──────────────────────────────────────────────────────────
+// ─── API: Shared Notes ────────────────────────────────────────────────────────
+app.get('/api/notes', async (req, res) => {
+  try {
+    let { from, to } = req.query;
+    if (!from || !to) {
+      const r = currentWeekRange();
+      from = r.from; to = r.to;
+    }
+    const { data, error } = await supabase
+      .from('shared_notes')
+      .select('*')
+      .gte('note_date', from)
+      .lte('note_date', to)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    res.json(data || []);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/notes', async (req, res) => {
+  try {
+    const { note_date, note_text, author_name } = req.body;
+    if (!note_date || !note_text) return res.status(400).json({ error: 'Missing note_date or note_text' });
+    const { data, error } = await supabase
+      .from('shared_notes')
+      .insert([{ note_date, note_text, author_name: author_name || 'Worker' }])
+      .select()
+      .single();
+    if (error) throw error;
+    res.json(data);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 app.post('/api/entry', async (req, res) => {
   try {
     const { user_id, day, start_time, end_time, lunch_mins, job, materials } = req.body;

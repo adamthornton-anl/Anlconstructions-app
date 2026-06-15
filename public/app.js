@@ -121,49 +121,56 @@ function changePassword() {
   setTimeout(closeSettings, 1500);
 }
 
-// ─── Shared Notes ─────────────────────────────────────────────────────────────
-var allNotes = {}; // {date: notes}
-
-function loadSharedNotes() {
-  // In a real app, fetch from server. For now, load from localStorage
-  var stored = localStorage.getItem('shared-notes');
-  if (stored) { allNotes = JSON.parse(stored); }
-  renderSharedNotes();
-}
-
-function renderSharedNotes() {
-  var notesEl = document.getElementById('shared-notes');
-  var weekNotes = [];
-  weekDays.forEach(function(day) {
-    var note = allNotes[day.isoDate];
-    if (note) {
-      weekNotes.push('<div style="margin-bottom:8px;padding:8px;background:white;border-left:3px solid #0066cc;border-radius:2px">' +
-        '<strong>' + day.label + ':</strong> ' + note + '</div>');
-    }
-  });
-  notesEl.innerHTML = weekNotes.length ? weekNotes.join('') : '<em style="color:#999">No shared notes this week</em>';
-}
-
-function saveNotes() {
-  var input = document.getElementById('materials-input');
-  var notes = input.value.trim();
-  var today = weekDays.find(function(d){ return d.isoDate === getTodayISO(); });
-  if (!today) { showToast('Select a valid week'); return; }
-  
-  if (notes) {
-    allNotes[today.isoDate] = notes;
-    localStorage.setItem('shared-notes', JSON.stringify(allNotes));
-    input.value = '';
-    showToast('Notes saved and shared with all workers!');
-    renderSharedNotes();
-  } else {
-    showToast('Please enter some notes');
-  }
-}
-
+// ─── Shared Notes (API-backed, visible to all workers) ────────────────────────
 function getTodayISO() {
   var d = new Date();
   return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+}
+
+function loadSharedNotes() {
+  var from = weekDays[0].isoDate, to = weekDays[4].isoDate;
+  fetch('/api/notes?from=' + from + '&to=' + to)
+    .then(function(r){ return r.json(); })
+    .then(function(data){ renderSharedNotes(Array.isArray(data) ? data : []); })
+    .catch(function(){ renderSharedNotes([]); });
+}
+
+function renderSharedNotes(notesList) {
+  var notesEl = document.getElementById('shared-notes');
+  if (!notesList || !notesList.length) {
+    notesEl.innerHTML = '<em style="color:#999">No shared notes this week</em>';
+    return;
+  }
+  var html = notesList.map(function(n) {
+    var dayObj = weekDays.find(function(d){ return d.isoDate === n.note_date; });
+    var label = dayObj ? dayObj.label : n.note_date;
+    var escapedText = n.note_text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return '<div style="margin-bottom:8px;padding:8px;background:white;border-left:3px solid #0066cc;border-radius:2px">' +
+      '<strong>' + label + '</strong> <span style="font-size:11px;color:#999">(' + (n.author_name || 'Worker') + ')</span><br>' +
+      escapedText + '</div>';
+  }).join('');
+  notesEl.innerHTML = html;
+}
+
+function saveSharedNote() {
+  if (!user) return;
+  var input = document.getElementById('shared-note-input');
+  var text = input.value.trim();
+  if (!text) { showToast('Please enter a note'); return; }
+  var today = getTodayISO();
+  fetch('/api/notes', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ note_date: today, note_text: text, author_name: user.name })
+  })
+    .then(function(r){ return r.json(); })
+    .then(function(resp) {
+      if (resp.error) throw new Error(resp.error);
+      input.value = '';
+      showToast('Note saved! All workers can see it.');
+      loadSharedNotes();
+    })
+    .catch(function(e){ showToast('Error saving note: ' + e.message); });
 }
 
 // ─── Week ─────────────────────────────────────────────────────────────────────
@@ -209,16 +216,7 @@ function postEntry(payload) {
   }).then(function(r){ return r.json(); });
 }
 
-function saveNotes() {
-  if (!user) return;
-  var materials = document.getElementById('materials-input').value.trim();
-  var now = new Date();
-  var todayIso = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
-  var found = weekDays.find(function(d){ return d.isoDate === todayIso; }) || weekDays[0];
-  postEntry({user_id: user.id, day: found.isoDate, materials: materials})
-    .then(function(){ showToast('✓ Materials saved'); loadEntries(); })
-    .catch(function(e){ alert('Error: ' + e.message); });
-}
+// (saveNotes replaced by saveSharedNote above — notes now saved to Supabase)
 
 // ─── Time Modal ───────────────────────────────────────────────────────────────
 function openTimeModal(dayObj, isStart) {
